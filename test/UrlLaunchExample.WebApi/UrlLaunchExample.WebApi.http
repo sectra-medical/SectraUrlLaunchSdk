@@ -1,0 +1,17 @@
+@UrlLaunchExample.WebApi_HostAddress = http://localhost:5079
+
+# Empty "encrypted" query string is not treated as a sharedSecretEncryptedUrlQuery
+GET {{UrlLaunchExample.WebApi_HostAddress}}/UrlLaunchExampleApi/?sharedSecretEncryptedUrlQuery=
+Accept: application/json
+
+###
+
+# Input 123 is not a valid encrypted query string
+GET {{UrlLaunchExample.WebApi_HostAddress}}/UrlLaunchExampleApi/?sharedSecretEncryptedUrlQuery=123
+Accept: application/json
+
+
+###
+# Too old timestamp, generated shared secret queries are only valid for 30 seconds. 
+# Use UrlLaunchExample do generate and use directly.
+GET {{UrlLaunchExample.WebApi_HostAddress}}/UrlLaunchExampleApi/?sharedSecretEncryptedUrlQuery=m5Lw1p8WiGHOrpV3SwqrcD4CwBAIfBhWs7aUY60KyjDZveKTTLCVlkCjXhnEGWjEmErdSBW5ArAa7bEjUvAEnK2tKLqBgbIKPsSKTqeJay0Q7lhHAogut8O5knJ0T5KwsRezxpsgWmASbtjmMU0N9LJKByRlGiFeq3XV5t1P0JHxlOPuLWox7f9PwTUoRrZcxF%2F0gbNCPmXYDFWw4O7mc0eFg1Zp8ygOOROHCt9zljvgWDyZFrESXUrA

@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <RootNamespace>Sectra.UrlLaunchSecurity</RootNamespace>
+        <SignTargetFile>false</SignTargetFile>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>../../src/SectraUrlLaunchSdkSigningKey.snk</AssemblyOriginatorKeyFile>
+        <Nullable>enable</Nullable>
+        <LangVersion>12</LangVersion>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="..\TestData\integrating_party_test_cert.pfx">
+            <Link>integrating_party_test_cert.pfx</Link>
+        </EmbeddedResource>
+        <EmbeddedResource Include="..\TestData\url_launch_system_test_cert.pfx">
+            <Link>url_launch_system_test_cert.pfx</Link>
+        </EmbeddedResource>
+    </ItemGroup>
+
+</Project>

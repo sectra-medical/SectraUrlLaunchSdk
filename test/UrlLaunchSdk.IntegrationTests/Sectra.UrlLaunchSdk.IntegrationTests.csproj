@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net8.0;net48</TargetFrameworks>
+        <SignTargetFile>false</SignTargetFile>
+        <IsPackable>false</IsPackable>
+
+        <RootNamespace>Sectra.UrlLaunchSecurity</RootNamespace>
+        <Nullable>enable</Nullable>
+        <LangVersion>12</LangVersion>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>../../src/SectraUrlLaunchSdkSigningKey.snk</AssemblyOriginatorKeyFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+        <PackageReference Include="NUnit" Version="4.3.2" />
+        <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+        <PackageReference Include="coverlet.collector" Version="6.0.4">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Pki\Sectra.UrlLaunch.Pki.csproj" />
+        <ProjectReference Include="..\..\src\SharedSecret\Sectra.UrlLaunch.SharedSecret.csproj" />
+        <ProjectReference Include="..\Pki.UnitTests.Shared\Sectra.UrlIntegration.Pki.UnitTests.Utils.csproj" />
+    </ItemGroup>
+
+</Project>

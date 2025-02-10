@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;netstandard2.1;net8.0</TargetFrameworks>
+        <AssemblyName>Sectra.UrlLaunch.UrlAccessString</AssemblyName>
+        <RootNamespace>Sectra.UrlLaunch.UrlAccessString</RootNamespace>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>../SectraUrlLaunchSdkSigningKey.snk</AssemblyOriginatorKeyFile>
+        <Deterministic>true</Deterministic>
+        <IsPackable>true</IsPackable>
+        
+        <Title>Sectra URL Launch URL Access String</Title>
+        <Description>This package can be used for creating the plain text URL-launch access strings.</Description>
+        <VersionPrefix>1.0.0</VersionPrefix>
+        <PackageReleaseNotes>
+            1.0.0 First open source release
+        </PackageReleaseNotes>
+    </PropertyGroup>
+</Project>

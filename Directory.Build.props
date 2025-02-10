@@ -1,0 +1,13 @@
+<Project>
+    <PropertyGroup>
+        <Nullable>enable</Nullable>
+        <LangVersion>12</LangVersion>
+
+        <Company>Sectra AB</Company>
+        <Authors>Sectra AB</Authors>
+        <Copyright>© 2025, Sectra AB</Copyright>
+        <RepositoryUrl>https://github.com/sectra-medical/SectraUrlLaunchSdk.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <SymbolPackageFormat>symbols.nupkg</SymbolPackageFormat>
+    </PropertyGroup>
+</Project>
