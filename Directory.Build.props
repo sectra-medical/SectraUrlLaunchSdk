@@ -5,9 +5,11 @@
 
         <Company>Sectra AB</Company>
         <Authors>Sectra AB</Authors>
-        <Copyright>© 2025, Sectra AB</Copyright>
+        <Copyright>Â© 2025, Sectra AB</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <ProjectUrl>https://github.com/sectra-medical/SectraUrlLaunchSdk</ProjectUrl>
         <RepositoryUrl>https://github.com/sectra-medical/SectraUrlLaunchSdk.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <SymbolPackageFormat>symbols.nupkg</SymbolPackageFormat>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
 </Project>
