@@ -13,6 +13,7 @@
         <PackageId>Sectra.UrlLaunch.UrlAccessString</PackageId>
         <Title>Sectra URL Launch URL Access String</Title>
         <Description>This package can be used for creating the plain text URL-launch access strings.</Description>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <VersionPrefix>1.0.1</VersionPrefix>
         <PackageReleaseNotes>
             Release notes for Sectra.UrlLaunch.UrlAccessString v1.0.1:
@@ -25,5 +26,8 @@
     </PropertyGroup>
     <ItemGroup>
         <None Include="..\icon.png" Pack="true" PackagePath="\"/>
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
 </Project>
