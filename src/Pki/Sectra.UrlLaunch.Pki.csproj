@@ -13,6 +13,7 @@
         <PackageId>Sectra.UrlLaunch.Pki</PackageId>
         <Title>Sectra URL Launch PKI Encryption</Title>
         <Description>This package can be used for encrypting URL-launch access strings using the Sectra PKI encryption algorithm.</Description>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <VersionPrefix>1.0.1</VersionPrefix>
         <PackageReleaseNotes>
             Release notes for Sectra.UrlLaunch.Pki v1.0.1:
@@ -25,5 +26,8 @@
     </PropertyGroup>
     <ItemGroup>
         <None Include="..\icon.png" Pack="true" PackagePath="\"/>
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
 </Project>
