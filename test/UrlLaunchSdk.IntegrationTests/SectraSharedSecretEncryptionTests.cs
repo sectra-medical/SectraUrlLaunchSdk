@@ -17,7 +17,7 @@ public class SectraSharedSecretEncryptionTests {
     }
 
     [Test]
-    public void IsPkiEncryption_DetectsEncryptedLaunchString() {
+    public void IsSharedSecretEncryption_DetectsEncryptedLaunchString() {
         // Arrange
         var key = GetKey();
 
@@ -29,7 +29,7 @@ public class SectraSharedSecretEncryptionTests {
     }
 
     [Test]
-    public void SectraPkiEncryption_CanSecureAndViewString() {
+    public void SharedSecretEncryption_CanSecureAndViewString() {
         // Arrange
         var key = GetKey();
 
