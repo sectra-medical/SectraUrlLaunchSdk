@@ -11,11 +11,6 @@ internal class EncryptedOneTimeSignature {
     private const int KeyByteSize = 32;
 
     /// <summary>
-    /// Aligned with <see cref="SymmetricEncryption.NonceByteSizeAesCbc"/>
-    /// </summary>
-    private const int NonceByteSizeAesCbc = 16;
-
-    /// <summary>
     /// Aligned with <see cref="SymmetricEncryption.NonceByteSizeAesGcm"/>
     /// </summary>
     private const int NonceByteSizeAesGcm = 12;
@@ -60,11 +55,7 @@ internal class EncryptedOneTimeSignature {
     /// <param name="key"></param>
     public static byte[] EncryptAndSign(byte[] data, byte[] key) {
 
-#if NETSTANDARD2_1_OR_GREATER
         var nonce = Rng.GetBytes(NonceByteSizeAesGcm);
-#else
-        var nonce = Rng.GetBytes(NonceByteSizeAesCbc);
-#endif
 
         var ephemeralKeys = DeriveKeys(key, nonce);
 
@@ -100,11 +91,7 @@ internal class EncryptedOneTimeSignature {
     /// <returns>Plaintext data that was signed and encrypted if signature verifies, otherwise exception is thrown</returns>
 
     public static byte[] VerifyAndDecrypt(byte[] signedCipherText, byte[] key) {
-#if NETSTANDARD2_1_OR_GREATER
         var nonceByteSize = NonceByteSizeAesGcm;
-#else
-        var nonceByteSize = NonceByteSizeAesCbc;
-#endif
 
         var nonce = signedCipherText.Take(nonceByteSize);
         var ephemeralKeys = DeriveKeys(key, nonce.ToArray());

@@ -106,7 +106,7 @@ internal class SymmetricEncryption {
     /// Derive a cipher key and MAC key from the main key and a nonce
     /// </summary>
     private static (byte[] CipherKey, byte[] CipherIv, byte[] MacKey) DeriveKeys(byte[] key, byte[] nonce) {
-#if NET6_0_OR_GREATER
+#if NET8_0_OR_GREATER
         var cipherKey = HKDF.DeriveKey(HashAlgorithmName.SHA256, key, KeyByteSize, null, Combine(CipherKeyDomainIdentifier, nonce));
         var cipherIv = HKDF.DeriveKey(HashAlgorithmName.SHA256, key, IvByteSize, null, Combine(CipherIvDomainIdentifier, nonce));
         var macKey = HKDF.DeriveKey(HashAlgorithmName.SHA256, key, KeyByteSize, null, Combine(MacKeyDomainIdentifier, nonce));
