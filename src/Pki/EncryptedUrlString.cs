@@ -24,9 +24,9 @@ internal class EncryptedUrlString : UrlStringSerializable {
     public string Serialize() {
         var serializedProperties = new Dictionary<string, string>
         {
-            { SymmetricallyEncryptedUrlStringKey, Convert.ToBase64String(this.SymmetricallyEncryptedUrlString ?? []).UrlEncodeString() },
-            { EncryptedSymmetricPasswordKey, Convert.ToBase64String(this.EncryptedSymmetricPassword ?? []).UrlEncodeString() },
-            { InitializationVectorKey, Convert.ToBase64String(this.InitializationVector ?? []).UrlEncodeString() },
+            { SymmetricallyEncryptedUrlStringKey, Convert.ToBase64String(this.SymmetricallyEncryptedUrlString ?? Array.Empty<byte>()).UrlEncodeString() },
+            { EncryptedSymmetricPasswordKey, Convert.ToBase64String(this.EncryptedSymmetricPassword ?? Array.Empty<byte>()).UrlEncodeString() },
+            { InitializationVectorKey, Convert.ToBase64String(this.InitializationVector ?? Array.Empty<byte>()).UrlEncodeString() },
             { ProtocolVersionKey, this.ProtocolVersion.ToString() },
         };
 

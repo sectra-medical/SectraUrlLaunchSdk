@@ -5,9 +5,7 @@
         <SignTargetFile>false</SignTargetFile>
         <IsPackable>false</IsPackable>
 
-        <RootNamespace>Sectra.UrlLaunchSecurity</RootNamespace>
         <Nullable>enable</Nullable>
-        <LangVersion>12</LangVersion>
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>../../src/SectraUrlLaunchSdkSigningKey.snk</AssemblyOriginatorKeyFile>
     </PropertyGroup>

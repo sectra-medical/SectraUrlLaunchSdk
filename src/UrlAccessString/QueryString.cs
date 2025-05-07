@@ -441,8 +441,8 @@ public static class QueryString {
             throw new ArgumentException("A patient ID must be given if any examination IDs or accession numbers are given.");
         }
 
-        var examinationId = parameters.ExaminationId ?? [];
-        var accessionNumber = parameters.AccessionNumber ?? [];
+        var examinationId = parameters.ExaminationId ?? new List<string>();
+        var accessionNumber = parameters.AccessionNumber ?? new List<string>();
         if ((parameters.SopInstanceUid != null) && ((examinationId.Count != 1) || (accessionNumber.Count != 1))) {
             throw new ArgumentException("One single accession number and examination ID must be specified in combination with SOP Instance UID.");
         }
