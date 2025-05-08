@@ -1,5 +1,11 @@
 # CHANGELOG for Sectra.UrlLaunch.UrlAccessString
 
+## [1.0.2] - 2025-05-09
+### Fixed
+- Dotnet version compatibility issues
+
+---
+
 ## [1.0.1] - 2025-03-25
 ### Fixed
 - Package improvements for nuget.org

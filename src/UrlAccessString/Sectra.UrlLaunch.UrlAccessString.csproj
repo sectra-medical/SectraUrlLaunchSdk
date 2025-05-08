@@ -14,12 +14,12 @@
         <Title>Sectra URL Launch URL Access String</Title>
         <Description>This package can be used for creating the plain text URL-launch access strings.</Description>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <VersionPrefix>1.0.1</VersionPrefix>
+        <VersionPrefix>1.0.2</VersionPrefix>
         <PackageReleaseNotes>
-            Release notes for Sectra.UrlLaunch.UrlAccessString v1.0.1:
+            Release notes for Sectra.UrlLaunch.UrlAccessString v1.0.2:
 
             Fixed
-            - Package improvements for nuget.org
+            - Dotnet version compatibility issues
 
             For detailed release history, see: https://github.com/sectra-medical/SectraUrlLaunchSdk/blob/main/src/UrlAccessString/CHANGELOG.md
         </PackageReleaseNotes>
