@@ -213,11 +213,19 @@ internal class SymmetricEncryption {
 
         // Unpack MAC
         var mac = new byte[KeyByteSize];
+#if NET8_0_OR_GREATER
+        cipherTextStream.ReadExactly(mac, 0, mac.Length);
+#else
         cipherTextStream.Read(mac, 0, mac.Length);
+#endif
 
         // Unpack Nonce
         var nonce = new byte[NonceByteSizeAesCbc];
+#if NET8_0_OR_GREATER
+        cipherTextStream.ReadExactly(nonce, 0, nonce.Length);
+#else
         cipherTextStream.Read(nonce, 0, nonce.Length);
+#endif
 
         var ephemeralKeys = DeriveKeys(key, nonce);
 

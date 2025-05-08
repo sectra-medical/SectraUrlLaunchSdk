@@ -29,12 +29,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		Directory.Build.props = Directory.Build.props
+		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
+		scripts\IntegrationTestRunner.sh = scripts\IntegrationTestRunner.sh
 		README.md = README.md
+		scripts\run-dotnet.sh = scripts\run-dotnet.sh
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sectra.UrlLaunchSdk.IntegrationTests", "test\UrlLaunchSdk.IntegrationTests\Sectra.UrlLaunchSdk.IntegrationTests.csproj", "{4483D30D-F377-4F36-A6B5-AFF962148D58}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple", "examples\Simple\Simple.csproj", "{6AE438BF-817C-4A4D-9552-8FCF4A7151D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedSecret.IntegrationTests.Runner", "test\SharedSecret.IntegrationTests.Runner\SharedSecret.IntegrationTests.Runner.csproj", "{4CD437D8-24F8-45B7-92E7-2E40C5FD4E86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -86,6 +91,10 @@ Global
 		{6AE438BF-817C-4A4D-9552-8FCF4A7151D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6AE438BF-817C-4A4D-9552-8FCF4A7151D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6AE438BF-817C-4A4D-9552-8FCF4A7151D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CD437D8-24F8-45B7-92E7-2E40C5FD4E86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CD437D8-24F8-45B7-92E7-2E40C5FD4E86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CD437D8-24F8-45B7-92E7-2E40C5FD4E86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CD437D8-24F8-45B7-92E7-2E40C5FD4E86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -99,5 +108,9 @@ Global
 		{74BDDEA9-1181-43F5-8A99-EE947DCD922D} = {80731B15-C51D-4A5D-97DA-FB7ECD37ABB9}
 		{4483D30D-F377-4F36-A6B5-AFF962148D58} = {80731B15-C51D-4A5D-97DA-FB7ECD37ABB9}
 		{6AE438BF-817C-4A4D-9552-8FCF4A7151D7} = {59D80D44-C4A0-4160-B357-8677FEFB0231}
+		{4CD437D8-24F8-45B7-92E7-2E40C5FD4E86} = {80731B15-C51D-4A5D-97DA-FB7ECD37ABB9}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EDB9598F-0F5A-44FB-ABDE-B56712F6568D}
 	EndGlobalSection
 EndGlobal
