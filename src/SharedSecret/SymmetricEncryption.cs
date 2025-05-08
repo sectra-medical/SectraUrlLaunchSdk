@@ -318,6 +318,10 @@ internal class SymmetricEncryption {
     /// Decrypt cipher text using key and return plain text
     /// </summary>
     public static byte[] Decrypt(ReadOnlySpan<byte> cipherText, byte[] key) {
+        if (cipherText[0] == (byte)Format.Version1) {
+            // Modern .net should be able to decrypt from legacy systems as well.
+            return DecryptNetFramework(cipherText.ToArray(), key);
+        }
         if (cipherText[0] != (byte)Format.Version2) {
             throw new NotSupportedException($"Data was encrypted with an unsupported cipher, expected {Format.Version2}, got {cipherText[0]}");
         }

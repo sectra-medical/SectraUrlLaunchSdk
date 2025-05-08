@@ -67,7 +67,7 @@ internal class OneTimeSignature {
         private readonly byte[] nonce;
         private readonly DateTime timeStamp;
 
-        public bool Expired => DateTime.UtcNow.Subtract(timeStamp).TotalSeconds > MaxSignatureAgeSeconds;
+        public bool Expired => DateTimeProvider.Current.UtcNow.Subtract(timeStamp).TotalSeconds > MaxSignatureAgeSeconds;
 
         public DateTime Timestamp => timeStamp;
 
@@ -98,7 +98,7 @@ internal class OneTimeSignature {
     /// </summary>
     /// <returns>Byte array with packed data</returns>
     private static byte[] Pack(byte[] data) {
-        return BitConverter.GetBytes(DateTime.UtcNow.ToBinary())
+        return BitConverter.GetBytes(DateTimeProvider.Current.UtcNow.ToBinary())
             .Concat(Rng.GetBytes(NonceByteCount))
             .Concat(data).ToArray();
     }
@@ -114,7 +114,7 @@ internal class OneTimeSignature {
     }
 
     private static bool VerifyTimestamp(DateTime timestamp) {
-        return DateTime.UtcNow.Subtract(timestamp).TotalSeconds <= MaxSignatureAgeSeconds;
+        return DateTimeProvider.Current.UtcNow.Subtract(timestamp).TotalSeconds <= MaxSignatureAgeSeconds;
     }
 
     /// <summary>
