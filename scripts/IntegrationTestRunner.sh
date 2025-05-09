@@ -9,18 +9,25 @@ dotnet9image="mcr.microsoft.com/dotnet/sdk:9.0"
 workingDirectory="/src/test/SharedSecret.IntegrationTests.Runner"
 allTestsSuccessful=1
 
-podman pull $dotnet8image
-podman pull $dotnet9image
+# Detect container runtime: use `podman` if available, otherwise fall back to `docker`
+CONTAINER_RUNTIME="docker" # Default to Docker for GitHub Actions
 
-podman run -d --name dotnet8-container -v ./:/src --workdir $workingDirectory $dotnet8image tail -f /dev/null
-podman run -d --name dotnet9-container -v ./:/src --workdir $workingDirectory $dotnet9image tail -f /dev/null
+if command -v podman &>/dev/null; then
+  CONTAINER_RUNTIME="podman"
+fi
 
-podman exec -i dotnet8-container ../../scripts/run-dotnet.sh build net8.0
-podman exec -i dotnet9-container ../../scripts/run-dotnet.sh build net9.0
+$CONTAINER_RUNTIME pull $dotnet8image
+$CONTAINER_RUNTIME pull $dotnet9image
 
-dotnet8output="$(podman exec -i dotnet8-container ../../scripts/run-dotnet.sh run net8.0 secure $base64key $data)"
+$CONTAINER_RUNTIME run -d --name dotnet8-container -v ./:/src --workdir $workingDirectory $dotnet8image tail -f /dev/null
+$CONTAINER_RUNTIME run -d --name dotnet9-container -v ./:/src --workdir $workingDirectory $dotnet9image tail -f /dev/null
+
+$CONTAINER_RUNTIME exec -i dotnet8-container ../../scripts/run-dotnet.sh build net8.0
+$CONTAINER_RUNTIME exec -i dotnet9-container ../../scripts/run-dotnet.sh build net9.0
+
+dotnet8output="$($CONTAINER_RUNTIME exec -i dotnet8-container ../../scripts/run-dotnet.sh run net8.0 secure $base64key $data)"
 echo "Verifying SharedSecret encryption from .net 8"
-testresult1="$(podman exec -i dotnet8-container ../../scripts/run-dotnet.sh run net8.0 view $base64key $dotnet8output | xargs)"
+testresult1="$($CONTAINER_RUNTIME exec -i dotnet8-container ../../scripts/run-dotnet.sh run net8.0 view $base64key $dotnet8output | xargs)"
 if [ "$testresult1" != "$data" ]; then
     echo "Test failed! result '$testresult1'"
     allTestsSuccessful=0
@@ -28,9 +35,9 @@ else
     echo "Test successful!"
 fi
 
-dotnet9output="$(podman exec -i dotnet9-container ../../scripts/run-dotnet.sh run net9.0 secure $base64key $data)"
+dotnet9output="$($CONTAINER_RUNTIME exec -i dotnet9-container ../../scripts/run-dotnet.sh run net9.0 secure $base64key $data)"
 echo "Verifying SharedSecret encryption from .net 9"
-testresult2="$(podman exec -i dotnet8-container ../../scripts/run-dotnet.sh run net8.0 view $base64key $dotnet9output | xargs)"
+testresult2="$($CONTAINER_RUNTIME exec -i dotnet8-container ../../scripts/run-dotnet.sh run net8.0 view $base64key $dotnet9output | xargs)"
 if [ "$testresult2" != "$data" ]; then
     echo "Test failed! result '$testresult2'"
     allTestsSuccessful=0
@@ -38,10 +45,10 @@ else
     echo "Test successful!"
 fi
 
-podman stop dotnet8-container
-podman rm dotnet8-container
-podman stop dotnet9-container
-podman rm dotnet9-container
+$CONTAINER_RUNTIME stop dotnet8-container
+$CONTAINER_RUNTIME rm dotnet8-container
+$CONTAINER_RUNTIME stop dotnet9-container
+$CONTAINER_RUNTIME rm dotnet9-container
 
 if [ $allTestsSuccessful -eq 1 ]; then
     echo "All tests passed!"
