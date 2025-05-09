@@ -23,7 +23,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 9.0.x
 
     # Step 3: Install Mono
     - name: Set up Mono Environment
@@ -43,11 +43,15 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
 
-    # Step 6: Package the SDK
+    # Step 6: Integration test the SDK
+    - name: Integration test
+      run: ./scripts/IntegrationTestRunner.sh
+
+    # Step 7: Package the SDK
     - name: Pack
       run: dotnet pack --configuration Release -o ./artifacts
 
-    # Step 7: Upload
+    # Step 8: Upload
     - name: Upload
       uses: actions/upload-artifact@v4
       with:

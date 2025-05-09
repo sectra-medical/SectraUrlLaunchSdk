@@ -5,7 +5,6 @@
         <AssemblyOriginatorKeyFile>../../src/SectraUrlLaunchSdkSigningKey.snk</AssemblyOriginatorKeyFile>
         <IsPackable>false</IsPackable>
         <Nullable>enable</Nullable>
-        <LangVersion>12</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>

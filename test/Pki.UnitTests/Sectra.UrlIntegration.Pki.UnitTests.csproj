@@ -6,10 +6,7 @@
         <IsPackable>false</IsPackable>
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>../../src/SectraUrlLaunchSdkSigningKey.snk</AssemblyOriginatorKeyFile>
-        <AssemblyName>Sectra.UrlIntegration.Pki.UnitTests</AssemblyName>
-        <RootNamespace>Sectra.UrlIntegration.Pki.UnitTests</RootNamespace>
         <Nullable>enable</Nullable>
-        <LangVersion>12</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>

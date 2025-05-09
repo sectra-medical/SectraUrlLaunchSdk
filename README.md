@@ -23,6 +23,12 @@ Go to the [official website](https://dotnet.microsoft.com/en-us/download) for .N
 1. Open a command prompt in the SDK root folder
 1. Execute `dotnet test`
 
+### Running the integration tests
+The integration tests currently use Podman and Bash to run the tests. The integration tests are not run by default when running `dotnet test` and need to be run manually.
+
+1. Open a WSL command prompt in the SDK root folder
+1. Execute `./scripts/IntegrationTestRunner.sh`
+
 ### Building the NuGet packages
 1. Open a command prompt in the SDK root folder
 1. Execute `dotnet pack -o deliverables`

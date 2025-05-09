@@ -16,8 +16,8 @@ internal sealed class UrlStringEncryptor {
 
     public static EncryptedUrlString Encrypt(SignedUrlString input, RSA key) {
 
-        var signature = input.Signature ?? [];
-        var urlString = input.UrlString ?? [];
+        var signature = input.Signature ?? Array.Empty<byte>();
+        var urlString = input.UrlString ?? Array.Empty<byte>();
 
         if (signature.Length > MaxSignatureLength) {
             throw new ArgumentOutOfRangeException($"Signature length exceeds the allowed length of {MaxSignatureLength}.");

@@ -7,7 +7,7 @@ public static class TestUtils {
     private const string certificatePassword = "test";
     public static X509Certificate2 GetCertificate(string certName = "integrating_party_test_cert.pfx") {
         var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = $"Sectra.UrlLaunchSecurity.{certName}";
+        var resourceName = $"{assembly.GetName().Name}.{certName}";
 
         byte[] certData;
 

@@ -106,7 +106,7 @@ internal class SymmetricEncryption {
     /// Derive a cipher key and MAC key from the main key and a nonce
     /// </summary>
     private static (byte[] CipherKey, byte[] CipherIv, byte[] MacKey) DeriveKeys(byte[] key, byte[] nonce) {
-#if NET6_0_OR_GREATER
+#if NET8_0_OR_GREATER
         var cipherKey = HKDF.DeriveKey(HashAlgorithmName.SHA256, key, KeyByteSize, null, Combine(CipherKeyDomainIdentifier, nonce));
         var cipherIv = HKDF.DeriveKey(HashAlgorithmName.SHA256, key, IvByteSize, null, Combine(CipherIvDomainIdentifier, nonce));
         var macKey = HKDF.DeriveKey(HashAlgorithmName.SHA256, key, KeyByteSize, null, Combine(MacKeyDomainIdentifier, nonce));
@@ -213,11 +213,19 @@ internal class SymmetricEncryption {
 
         // Unpack MAC
         var mac = new byte[KeyByteSize];
+#if NET8_0_OR_GREATER
+        cipherTextStream.ReadExactly(mac, 0, mac.Length);
+#else
         cipherTextStream.Read(mac, 0, mac.Length);
+#endif
 
         // Unpack Nonce
         var nonce = new byte[NonceByteSizeAesCbc];
+#if NET8_0_OR_GREATER
+        cipherTextStream.ReadExactly(nonce, 0, nonce.Length);
+#else
         cipherTextStream.Read(nonce, 0, nonce.Length);
+#endif
 
         var ephemeralKeys = DeriveKeys(key, nonce);
 
@@ -292,32 +300,14 @@ internal class SymmetricEncryption {
         return (new byte[] { (byte)Format.Version2 }).Concat(nonce).Concat(tag).Concat(cipherText).ToArray();
     }
 
-    //[SupportedOSPlatform("windows")]
-    [Obsolete("Only use if cross platform support with .NET Framwork 4.8 is needed")]
-    public static byte[] EncryptLegacyNetFramework(IEnumerable<byte> plainText, byte[] key) {
-        return EncryptNetFramework(plainText, key);
-    }
-
-    //[SupportedOSPlatform("windows")]
-    [Obsolete("Only use if cross platform support with .NET Framwork 4.8 is needed")]
-    public static string EncryptLegacyNetFramework(string plainText, byte[] key) {
-        return Convert.ToBase64String(EncryptLegacyNetFramework(Encoding.UTF8.GetBytes(plainText), key));
-    }
-
-    /// <summary>
-    /// Read cipher stream, decrypt using key and place decrypted plaintext in plain text stream
-    /// </summary>
-    public static void Decrypt(Stream cipherTextStream, Stream plainTextStream, byte[] key) {
-        var memoryStream = new MemoryStream();
-        cipherTextStream.CopyTo(memoryStream);
-        var p = Decrypt(memoryStream.ToArray(), key);
-        plainTextStream.Write(p, 0, p.Length);
-    }
-
     /// <summary>
     /// Decrypt cipher text using key and return plain text
     /// </summary>
     public static byte[] Decrypt(ReadOnlySpan<byte> cipherText, byte[] key) {
+        if (cipherText[0] == (byte)Format.Version1) {
+            // Modern .net should be able to decrypt from legacy systems as well.
+            return DecryptNetFramework(cipherText.ToArray(), key);
+        }
         if (cipherText[0] != (byte)Format.Version2) {
             throw new NotSupportedException($"Data was encrypted with an unsupported cipher, expected {Format.Version2}, got {cipherText[0]}");
         }
@@ -336,31 +326,13 @@ internal class SymmetricEncryption {
         return plainText;
     }
 
-    //[SupportedOSPlatform("windows")]
-    [Obsolete("Only use if cross platform support with .NET Framwork 4.8 is needed")]
-    public static byte[] DecryptLegacyNetFramework(IEnumerable<byte> cipherText, byte[] key) {
-        return DecryptNetFramework(cipherText, key);
-    }
-
-    //[SupportedOSPlatform("windows")]
-    [Obsolete("Only use if cross platform support with .NET Framwork 4.8 is needed")]
-    public static string DecryptLegacyNetFramework(string cipherTextBase64, byte[] key) {
-        return Encoding.UTF8.GetString(DecryptLegacyNetFramework(Convert.FromBase64String(cipherTextBase64), key));
-    }
-
 #elif NETSTANDARD2_0_OR_GREATER
     public static byte[] Encrypt(IEnumerable<byte> plainText, byte[] key) {
         return EncryptNetFramework(plainText, key);
     }
-    public static void Encrypt(Stream plainTextStream, Stream cipherTextStream, byte[] key) {
-        EncryptNetFramework(plainTextStream, cipherTextStream, key);
-    }
 
     public static byte[] Decrypt(IEnumerable<byte> cipherText, byte[] key) {
         return DecryptNetFramework(cipherText, key);
-    }
-    public static void Decrypt(Stream cipherTextStream, Stream plainTextStream, byte[] key) {
-        DecryptNetFramework(cipherTextStream, plainTextStream, key);
     }
 
 #endif
