@@ -290,3 +290,6 @@ __pycache__/
 
 # README example commands
 deliverables/
+src/Java/build/
+src/Java/*.jar
+test/SharedSecret.IntegrationTests.Runner.Java/build/

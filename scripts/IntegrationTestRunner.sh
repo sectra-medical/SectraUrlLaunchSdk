@@ -6,7 +6,9 @@ base64key="EpNnJ5vPSEL5vqSgG7Oe8fzgICZ3pzcqn1bEoHqzDA8="
 data="user_id=Username"
 dotnet8image="mcr.microsoft.com/dotnet/sdk:8.0"
 dotnet9image="mcr.microsoft.com/dotnet/sdk:9.0"
+javaimage="docker.io/amazoncorretto:24-jdk"
 workingDirectory="/src/test/SharedSecret.IntegrationTests.Runner"
+javaWorkingDirectory="/src/test/SharedSecret.IntegrationTests.Runner.Java"
 allTestsSuccessful=1
 
 # Detect container runtime: use `podman` if available, otherwise fall back to `docker`
@@ -18,12 +20,15 @@ fi
 
 $CONTAINER_RUNTIME pull $dotnet8image
 $CONTAINER_RUNTIME pull $dotnet9image
+$CONTAINER_RUNTIME pull $javaimage
 
 $CONTAINER_RUNTIME run -d --name dotnet8-container -v ./:/src --workdir $workingDirectory $dotnet8image tail -f /dev/null
 $CONTAINER_RUNTIME run -d --name dotnet9-container -v ./:/src --workdir $workingDirectory $dotnet9image tail -f /dev/null
+$CONTAINER_RUNTIME run -d --name java-container -v ./:/src --workdir $javaWorkingDirectory $javaimage tail -f /dev/null
 
 $CONTAINER_RUNTIME exec -i dotnet8-container ../../scripts/run-dotnet.sh build net8.0
 $CONTAINER_RUNTIME exec -i dotnet9-container ../../scripts/run-dotnet.sh build net9.0
+$CONTAINER_RUNTIME exec -i java-container ../../scripts/run-java.sh build
 
 dotnet8output="$($CONTAINER_RUNTIME exec -i dotnet8-container ../../scripts/run-dotnet.sh run net8.0 secure $base64key $data)"
 echo "Verifying SharedSecret encryption from .net 8"
@@ -45,10 +50,22 @@ else
     echo "Test successful!"
 fi
 
+javaoutput="$($CONTAINER_RUNTIME exec -i java-container ../../scripts/run-java.sh run secure $base64key $data)"
+echo "Verifying SharedSecret encryption from java"
+testresult3="$($CONTAINER_RUNTIME exec -i dotnet8-container ../../scripts/run-dotnet.sh run net8.0 view $base64key $javaoutput | xargs)"
+if [ "$testresult3" != "$data" ]; then
+    echo "Test failed! result '$testresult3'"
+    allTestsSuccessful=0
+else
+    echo "Test successful!"
+fi
+
 $CONTAINER_RUNTIME stop dotnet8-container
 $CONTAINER_RUNTIME rm dotnet8-container
 $CONTAINER_RUNTIME stop dotnet9-container
 $CONTAINER_RUNTIME rm dotnet9-container
+$CONTAINER_RUNTIME stop java-container
+$CONTAINER_RUNTIME rm java-container
 
 if [ $allTestsSuccessful -eq 1 ]; then
     echo "All tests passed!"
