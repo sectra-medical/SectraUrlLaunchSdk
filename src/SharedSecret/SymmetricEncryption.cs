@@ -177,7 +177,7 @@ internal class SymmetricEncryption {
     }
 
     private static void RawEncrypt(Stream plainText, Stream cipherText, byte[] key, byte[] iv) {
-        Aes aes = Aes.Create();
+        var aes = Aes.Create();
 #pragma warning disable CA5401 // IV is derived from HKDF with a random nonce via DeriveKeys()
         var encryptor = aes.CreateEncryptor(key, iv);
 #pragma warning restore CA5401

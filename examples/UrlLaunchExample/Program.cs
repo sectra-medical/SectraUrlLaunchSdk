@@ -175,7 +175,7 @@ public class Program {
         var storeLocations = new List<StoreLocation> { StoreLocation.LocalMachine, StoreLocation.CurrentUser };
 
         // Get certificates in all store locations
-        foreach (StoreLocation storeLocation in storeLocations) {
+        foreach (var storeLocation in storeLocations) {
             // Get and open the Personal store
             var certStore = new X509Store("My", storeLocation);
             certStore.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);

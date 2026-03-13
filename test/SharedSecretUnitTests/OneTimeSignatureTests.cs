@@ -94,7 +94,7 @@ tNKSFvbZP4ACUeqP3bLG8cSLYmFfM9FD/c+zSoEHBEDjq5EXJjaRMkyqGPT03j1HgBAFe0KzBYdjyFH9
         public int Count => count;
 
         public void Enqueue(OneTimeSignature.NonceAndTimestamp item) {
-            string serialized = $"{item.Timestamp.ToFileTimeUtc()}:{Convert.ToBase64String(item.Nonce)}";
+            var serialized = $"{item.Timestamp.ToFileTimeUtc()}:{Convert.ToBase64String(item.Nonce)}";
             using var sw = new StreamWriter(File.OpenWrite(fileName));
             sw.WriteLine(serialized);
             count++;
@@ -174,7 +174,7 @@ tNKSFvbZP4ACUeqP3bLG8cSLYmFfM9FD/c+zSoEHBEDjq5EXJjaRMkyqGPT03j1HgBAFe0KzBYdjyFH9
     }
 
     private static void ThreadRun() {
-        for (int i = 0; i < 1000; i++) {
+        for (var i = 0; i < 1000; i++) {
             var key = Rng.GetBytes(32);
             var signedData = OneTimeSignature.Sign(Encoding.UTF8.GetBytes(plainTextTestData), key);
             OneTimeSignature.Verify(signedData.ToArray(), key);

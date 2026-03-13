@@ -12,7 +12,7 @@ public static class TestUtils {
 
         byte[] certData;
 
-        using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+        using (var stream = assembly.GetManifestResourceStream(resourceName))
         using (var destination = new MemoryStream()) {
             stream.CopyTo(destination);
             certData = destination.ToArray();

@@ -11,7 +11,7 @@ public class SafeExtensionsTests {
 
     public static IEnumerable<object[]> RandomByteBufferMemberData(int n) {
         foreach (var _ in Enumerable.Range(start: 1, count: n)) {
-            byte[] buffer = new byte[4];
+            var buffer = new byte[4];
             RandomNumberGenerator.Create().GetBytes(buffer);
             yield return new object[] { buffer };
         }
@@ -36,15 +36,15 @@ public class SafeExtensionsTests {
     [MemberData(nameof(IntRangeMemberData), 1000)]
     public void SequenceEqualsConstantTime_WhenDifferent_ReturnsFalse(short i) {
 
-        byte[] source = new byte[] { 0x00, 0x00 };
-        byte[] compare = BitConverter.GetBytes(i);
+        var source = new byte[] { 0x00, 0x00 };
+        var compare = BitConverter.GetBytes(i);
 
         Assert.False(source.SequenceEqualConstantTime(compare, 4));
     }
 
     [Fact]
     public void SequenceEqualsConstantTime_WhenLengthLongerThanMax_Throws() {
-        byte[] source = new byte[] { 0x00, 0x00 };
+        var source = new byte[] { 0x00, 0x00 };
 
         Assert.Throws<ArgumentOutOfRangeException>(() => source.SequenceEqualConstantTime(source, 1));
     }

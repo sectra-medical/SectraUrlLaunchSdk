@@ -112,7 +112,7 @@ public class UrlStringEncryptorTests {
         // Arrange
         var cert = TestUtils.GetCertificate();
 
-        var encryptedData = SymmetricalEncryptor.Encrypt(new byte[dataLength], out byte[] key, out byte[] iv);
+        var encryptedData = SymmetricalEncryptor.Encrypt(new byte[dataLength], out var key, out var iv);
         var encryptedKey = cert.GetRSAPublicKey()!.Encrypt(key, RSAEncryptionPadding.OaepSHA1);
 
         var input = new EncryptedUrlString {

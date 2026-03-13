@@ -58,8 +58,8 @@ internal static class SafeExtensions {
         var newFirst = first.Concat(Enumerable.Repeat(padChar, maxExpectedLength - first.Length)).ToArray();
         var newSecond = second.Concat(Enumerable.Repeat(padChar, maxExpectedLength - second.Length)).ToArray();
 
-        int differ = 0;
-        for (int i = 0; i < newFirst.Length; i++) {
+        var differ = 0;
+        for (var i = 0; i < newFirst.Length; i++) {
             differ |= newFirst[i] ^ newSecond[i];
         }
         return differ == 0;

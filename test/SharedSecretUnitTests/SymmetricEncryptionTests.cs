@@ -109,7 +109,7 @@ public class SymmetricEncryptionTests {
 
     [Fact]
     public void SymmetricEncryption_EncryptNet6DecryptNetFramework_Throws() {
-        string cipherText = "An4kX/KF8i3+UaG+MQgUHFAjNtPZyUVrmhk5hi+u6l62XmJCkUGFudghBtttRk8p+vi9zx7zbxuDW9NnsI0YazlJPNX8O79S";
+        var cipherText = "An4kX/KF8i3+UaG+MQgUHFAjNtPZyUVrmhk5hi+u6l62XmJCkUGFudghBtttRk8p+vi9zx7zbxuDW9NnsI0YazlJPNX8O79S";
 
         Assert.Throws<NotSupportedException>(() => SymmetricEncryption.Decrypt(cipherText, key));
     }
@@ -117,8 +117,8 @@ public class SymmetricEncryptionTests {
     [Fact]
     public void SymmetricEncryption_EncryptNet6LegacyDecryptNetFramework_Succeeds() {
         // plainTextTestData encrypted using key on NET6 using EncryptLegacyNetFramework method
-        string cipherText = "AYzB8TSRbhdsSudz0RhqciOa/zcU8H7ofC4JqrPfib+eCBzUHXNnRsAJjPp+TtuL3Qj3OhpP2fmO5cudnzUna2sxZixuGP0AvFpD9q3YfgNlEr/Q2hRL+ObFinn4PRCSbg==";
-        byte[] key = Convert.FromBase64String("wAx4qO+azccfOP8/PS5z6do5iHW7QxMUmf105Z4xHO0=");
+        var cipherText = "AYzB8TSRbhdsSudz0RhqciOa/zcU8H7ofC4JqrPfib+eCBzUHXNnRsAJjPp+TtuL3Qj3OhpP2fmO5cudnzUna2sxZixuGP0AvFpD9q3YfgNlEr/Q2hRL+ObFinn4PRCSbg==";
+        var key = Convert.FromBase64String("wAx4qO+azccfOP8/PS5z6do5iHW7QxMUmf105Z4xHO0=");
 
         var plainText = SymmetricEncryption.Decrypt(cipherText, key);
         Assert.Equal(plainTextTestData, plainText);

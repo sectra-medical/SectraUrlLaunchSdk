@@ -11,5 +11,6 @@
         <RepositoryUrl>https://github.com/sectra-medical/SectraUrlLaunchSdk.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     </PropertyGroup>
 </Project>

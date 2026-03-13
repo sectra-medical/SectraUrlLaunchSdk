@@ -53,8 +53,8 @@ internal static class RSACryptoServiceProviderExtensions {
         }
 #pragma warning disable CA1416
         const int PROV_RSA_AES = 24;
-        CspKeyContainerInfo info = privateKey.CspKeyContainerInfo;
-        CspParameters cspParameters = new CspParameters(PROV_RSA_AES) {
+        var info = privateKey.CspKeyContainerInfo;
+        var cspParameters = new CspParameters(PROV_RSA_AES) {
             KeyContainerName = info.KeyContainerName,
             KeyNumber = (int)info.KeyNumber,
             Flags = CspProviderFlags.UseExistingKey,

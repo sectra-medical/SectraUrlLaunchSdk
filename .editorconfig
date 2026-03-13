@@ -16,16 +16,17 @@ indent_size = 2
 indent_size = 2
 
 [*.cs]
-# Use 'var' when type is apparent
-csharp_style_var_for_built_in_types = false:suggestion
-csharp_style_var_when_type_is_apparent = true:suggestion
-csharp_style_var_elsewhere = false:suggestion
+# Use 'var'
+csharp_style_var_for_built_in_types = true:error
+csharp_style_var_when_type_is_apparent = true:error
+csharp_style_var_elsewhere = true:error
+dotnet_diagnostic.IDE0007.severity = error
 
 # Prefer braces
 csharp_prefer_braces = true:suggestion
 
 # Namespace declarations
-csharp_style_namespace_declarations = file_scoped:suggestion
+csharp_style_namespace_declarations = file_scoped
 
 # Expression-bodied members
 csharp_style_expression_bodied_methods = when_on_single_line:suggestion
@@ -41,6 +42,9 @@ csharp_new_line_before_open_brace = none
 csharp_new_line_before_else = false
 csharp_new_line_before_catch = true
 csharp_new_line_before_finally = true
+
+# CA2213: Disposable fields should be disposed
+dotnet_diagnostic.CA2213.severity = error
 
 ###############################
 # Enable all security analyzer rules as errors
