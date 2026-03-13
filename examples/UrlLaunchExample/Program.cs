@@ -103,7 +103,7 @@ public class Program {
             PatientId = patientId,
             MrnIntegrationId = mrnIntegrationId,
         };
-        var queryString = QueryString.GetQueryString(parameters);
+        var queryString = QueryString.GetQueryStringWithCurrentTime(parameters);
 
         Console.WriteLine($"Launch query: {queryString}");
         Console.WriteLine();
@@ -189,3 +189,4 @@ public class Program {
     }
 
 }
+
