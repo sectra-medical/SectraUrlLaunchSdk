@@ -59,9 +59,9 @@ internal static class QueryStringUtility {
     /// <summary>
     /// Converts a DateTime object to the query string integer equivalent
     /// </summary>
-    public static int TimeToSeconds(DateTime time) {
+    public static long TimeToSeconds(DateTime time) {
         var t = time - new DateTime(1970, 1, 1);
-        return (int)t.TotalSeconds;
+        return (long)t.TotalSeconds;
     }
 
     /// <summary>

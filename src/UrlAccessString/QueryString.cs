@@ -253,7 +253,7 @@ public static class QueryString {
                         break;
                     case "time":
                         var time1970 = new DateTime(1970, 1, 1);
-                        long secondsSince1970 = long.Parse(paramValue);
+                        var secondsSince1970 = long.Parse(paramValue);
                         parameters.Time = time1970.AddSeconds(secondsSince1970);
                         break;
                     case "login_type":
