@@ -1,8 +1,9 @@
-﻿using NUnit.Framework;
-using System.Security.Cryptography.X509Certificates;
+﻿using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using NUnit.Framework;
 
 namespace Sectra.UrlLaunch.Pki;
+
 public class UrlStringSignerTests {
     [TestCase("")]
     [TestCase("some input string")]

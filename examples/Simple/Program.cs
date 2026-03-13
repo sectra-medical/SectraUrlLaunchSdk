@@ -5,9 +5,9 @@
  * 
  */
 
+using System.Diagnostics;
 using Sectra.UrlLaunch.SharedSecret;
 using Sectra.UrlLaunch.UrlAccessString;
-using System.Diagnostics;
 
 // Use the same key as in the UrlLaunchExample.WebApi example
 var base64Key = "EpNnJ5vPSEL5vqSgG7Oe8fzgICZ3pzcqn1bEoHqzDA8=";

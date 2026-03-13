@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Cryptography;
 
 namespace Sectra.UrlLaunch.Pki;
+
 internal sealed class UrlStringEncryptor {
     /// <summary>
     /// The maximum signature length that is allowed in number of bytes.

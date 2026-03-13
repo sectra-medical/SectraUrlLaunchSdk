@@ -9,10 +9,10 @@
  *
  */
 
-using Sectra.UrlLaunch.UrlAccessString;
 using System.CommandLine;
 using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
+using Sectra.UrlLaunch.UrlAccessString;
 
 namespace UrlLaunchExample;
 

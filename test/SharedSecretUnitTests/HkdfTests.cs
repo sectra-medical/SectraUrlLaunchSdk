@@ -7,6 +7,7 @@ using System.Text;
 using Xunit;
 
 namespace Sectra.UrlLaunch.SharedSecret;
+
 public class HkdfTests {
 
     /// <summary>

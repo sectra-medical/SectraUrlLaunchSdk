@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Sectra.UrlLaunch.Pki;
+
 public static class TestUtils {
     private const string certificatePassword = "test";
     public static X509Certificate2 GetCertificate(string certName = "integrating_party_test_cert.pfx") {

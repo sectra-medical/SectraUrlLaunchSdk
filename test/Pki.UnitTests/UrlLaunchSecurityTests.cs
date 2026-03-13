@@ -1,8 +1,9 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using System.Security.Cryptography.X509Certificates;
+using NUnit.Framework;
 
 namespace Sectra.UrlLaunch.Pki;
+
 [TestFixture]
 public class UrlLaunchSecurityTests {
     [Test]

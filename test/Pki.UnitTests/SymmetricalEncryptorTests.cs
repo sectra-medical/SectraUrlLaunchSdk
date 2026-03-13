@@ -1,7 +1,8 @@
-﻿using NUnit.Framework;
-using System.Text;
+﻿using System.Text;
+using NUnit.Framework;
 
 namespace Sectra.UrlLaunch.Pki;
+
 [TestFixture]
 public class SymmetricalEncryptorTests {
     [TestCase("some input")]

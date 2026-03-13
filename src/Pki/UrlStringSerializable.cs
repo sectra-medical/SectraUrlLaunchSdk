@@ -2,6 +2,7 @@
 using System.Linq;
 
 namespace Sectra.UrlLaunch.Pki;
+
 internal abstract class UrlStringSerializable {
     /// <summary>
     /// Serializes the specified properties to a query parameter string.

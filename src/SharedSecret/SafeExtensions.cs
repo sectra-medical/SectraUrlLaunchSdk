@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 
 namespace Sectra.UrlLaunch.SharedSecret;
+
 internal static class SafeExtensions {
     /// <summary>
     /// Compares two strings for equality in constant time. Should be used for

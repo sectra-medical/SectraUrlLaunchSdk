@@ -1,7 +1,7 @@
-﻿using NUnit.Framework;
-using Sectra.UrlLaunch.SharedSecret;
-using System;
+﻿using System;
 using System.Security.Cryptography;
+using NUnit.Framework;
+using Sectra.UrlLaunch.SharedSecret;
 
 namespace Sectra.UrlLaunch.IntegrationTests;
 

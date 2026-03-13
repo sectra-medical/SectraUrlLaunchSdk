@@ -1,6 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System.Security.Cryptography;
+using NUnit.Framework;
 using Sectra.UrlLaunch.Pki;
-using System.Security.Cryptography;
 
 namespace Sectra.UrlLaunch.IntegrationTests;
 

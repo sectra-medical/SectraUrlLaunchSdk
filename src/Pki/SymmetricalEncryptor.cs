@@ -3,6 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 
 namespace Sectra.UrlLaunch.Pki;
+
 internal sealed class SymmetricalEncryptor {
     public static byte[] Encrypt(byte[] input, out byte[] key, out byte[] iv) {
         byte[] encrypted;

@@ -2,6 +2,7 @@
 using System.Net;
 
 namespace Sectra.UrlLaunch.Pki;
+
 internal static class Extensions {
     public static string UrlEncodeString(this string source) {
         return WebUtility.UrlEncode(source);

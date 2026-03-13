@@ -1,11 +1,12 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using NUnit.Framework;
 
 namespace Sectra.UrlLaunch.Pki;
+
 [TestFixture]
 public class UrlStringEncryptorTests {
     [Test]
