@@ -98,7 +98,7 @@ internal class SymmetricEncryption {
     /// <param name="macKey">Mac key, should be ephemeral</param>
     /// <returns>MAC over input</returns>
     private static byte[] Mac(Stream input, byte[] macKey) {
-        var hmac = new HMACSHA256(macKey);
+        using var hmac = new HMACSHA256(macKey);
         return hmac.ComputeHash(input);
     }
 
@@ -177,10 +177,14 @@ internal class SymmetricEncryption {
     }
 
     private static void RawEncrypt(Stream plainText, Stream cipherText, byte[] key, byte[] iv) {
-        var aes = Aes.Create();
+        using var aes = Aes.Create();
 #pragma warning disable CA5401 // IV is derived from HKDF with a random nonce via DeriveKeys()
-        var encryptor = aes.CreateEncryptor(key, iv);
+        using var encryptor = aes.CreateEncryptor(key, iv);
 #pragma warning restore CA5401
+        // Do NOT wrap cs in `using`: CryptoStream.Dispose() also disposes the
+        // underlying cipherText stream, which the caller still reads afterwards.
+        // FlushFinalBlock() flushes all data, and the transform (the resource
+        // holder) is disposed above, so the undisposed CryptoStream leaks nothing.
         var cs = new CryptoStream(cipherText, encryptor, CryptoStreamMode.Write);
         plainText.CopyTo(cs);
         cs.FlushFinalBlock();
@@ -243,11 +247,10 @@ internal class SymmetricEncryption {
     }
 
     private static void RawDecrypt(Stream cipherText, Stream plainText, byte[] key, byte[] iv) {
-        var aes = Aes.Create();
-        var decryptor = aes.CreateDecryptor(key, iv);
-        using (var cs = new CryptoStream(cipherText, decryptor, CryptoStreamMode.Read)) {
-            cs.CopyTo(plainText);
-        }
+        using var aes = Aes.Create();
+        using var decryptor = aes.CreateDecryptor(key, iv);
+        using var cs = new CryptoStream(cipherText, decryptor, CryptoStreamMode.Read);
+        cs.CopyTo(plainText);
     }
 
 #if NETSTANDARD2_1_OR_GREATER || NET8_0_OR_GREATER
@@ -287,9 +290,9 @@ internal class SymmetricEncryption {
     /// </summary>
     public static byte[] Encrypt(ReadOnlySpan<byte> plainText, byte[] key) {
 #if NET8_0_OR_GREATER
-        AesGcm aes = new(key, TagByteSize);
+        using AesGcm aes = new(key, TagByteSize);
 #else
-        AesGcm aes = new(key);
+        using AesGcm aes = new(key);
 #endif
 
         var nonce = GenerateNonce(NonceByteSizeAesGcm);
@@ -315,9 +318,9 @@ internal class SymmetricEncryption {
         }
         var cipherTextLength = cipherText.Length - NonceByteSizeAesGcm - TagByteSize - 1;
 #if NET8_0_OR_GREATER
-        AesGcm aes = new(key, TagByteSize);
+        using AesGcm aes = new(key, TagByteSize);
 #else
-        AesGcm aes = new(key);
+        using AesGcm aes = new(key);
 #endif
         var plainText = new byte[cipherTextLength];
         aes.Decrypt(
