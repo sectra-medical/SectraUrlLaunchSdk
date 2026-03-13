@@ -46,11 +46,11 @@ internal sealed class UrlLaunchSecurity {
         }
 
         if (urlLaunchSystemCertificate.GetRSAPublicKey() == null) {
-            throw new Exception("URL launch system certificate does not have a public key!");
+            throw new InvalidOperationException("URL launch system certificate does not have a public key!");
         }
 
         if (!integratingPartyCertificate.HasPrivateKey) {
-            throw new Exception("Integrating party certificate does not have a private key!");
+            throw new InvalidOperationException("Integrating party certificate does not have a private key!");
         }
         return Secure(plainTextString, integratingPartyCertificate.GetRSAPrivateKey()!, urlLaunchSystemCertificate.GetRSAPublicKey()!);
     }
@@ -142,6 +142,7 @@ internal sealed class UrlLaunchSecurity {
     /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="urlLaunchSystemCertificate"/> or <paramref name="integratingPartyCertificate"/> is null.</exception>
     /// <exception cref="System.ArgumentException">Thrown if <paramref name="secureString"/> lacks any of its properties.</exception>
     /// <exception cref="CryptographicException">Thrown if <paramref name="secureString" /> cannot be decrypted using <paramref name="urlLaunchSystemCertificate" /> or if the provided signature cannot be verified using <paramref name="integratingPartyCertificate" />.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if <paramref name="urlLaunchSystemCertificate"/> does not have a private key or if <paramref name="integratingPartyCertificate"/> does not have a public key.</exception>
     public string View(EncryptedUrlString secureString, X509Certificate2 urlLaunchSystemCertificate, X509Certificate2 integratingPartyCertificate) {
         if (urlLaunchSystemCertificate == null) {
             throw new ArgumentNullException(nameof(urlLaunchSystemCertificate));
@@ -152,12 +153,12 @@ internal sealed class UrlLaunchSecurity {
         }
 
         if (!urlLaunchSystemCertificate.HasPrivateKey) {
-            throw new Exception("URL launch system certificate does not have a private key!");
+            throw new InvalidOperationException("URL launch system certificate does not have a private key!");
         }
 
 
         if (integratingPartyCertificate.GetRSAPublicKey() == null) {
-            throw new Exception("Integrating party certificate does not have a public key!");
+            throw new InvalidOperationException("Integrating party certificate does not have a public key!");
         }
 
         return View(secureString, urlLaunchSystemCertificate.GetRSAPrivateKey()!, integratingPartyCertificate.GetRSAPublicKey()!);
