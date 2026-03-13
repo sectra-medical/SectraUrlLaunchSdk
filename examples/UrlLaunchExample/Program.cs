@@ -1,4 +1,4 @@
-﻿/** Sectra URL integration example
+/** Sectra URL integration example
  * 
  * This code is an example on how the URL integration with Sectra products
  * works. The example is not intended to be used as-is since exposing

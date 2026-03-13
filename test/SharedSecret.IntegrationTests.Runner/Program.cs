@@ -1,4 +1,4 @@
-﻿/**
+/**
  * This program is used by the integration tests to run the encryption and decryption commands.
  * If you make changes here please run IntegrationTestRunner.sh.
  */

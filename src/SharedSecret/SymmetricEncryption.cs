@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -178,7 +178,9 @@ internal class SymmetricEncryption {
 
     private static void RawEncrypt(Stream plainText, Stream cipherText, byte[] key, byte[] iv) {
         Aes aes = Aes.Create();
+#pragma warning disable CA5401 // IV is derived from HKDF with a random nonce via DeriveKeys()
         var encryptor = aes.CreateEncryptor(key, iv);
+#pragma warning restore CA5401
         var cs = new CryptoStream(cipherText, encryptor, CryptoStreamMode.Write);
         plainText.CopyTo(cs);
         cs.FlushFinalBlock();

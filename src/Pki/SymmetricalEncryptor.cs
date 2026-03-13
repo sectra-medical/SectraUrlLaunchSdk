@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Security.Cryptography;
 
@@ -14,7 +14,9 @@ internal sealed class SymmetricalEncryptor {
         key = rijAlg.Key;
         iv = rijAlg.IV;
 
+#pragma warning disable CA5401 // IV is freshly generated via GenerateIV() above
         using var encryptor = rijAlg.CreateEncryptor(rijAlg.Key, rijAlg.IV);
+#pragma warning restore CA5401
         using var ms = new MemoryStream();
         using var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write);
         cs.Write(input, 0, input.Length);
