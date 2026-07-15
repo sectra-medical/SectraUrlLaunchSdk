@@ -293,3 +293,6 @@ deliverables/
 src/Java/build/
 src/Java/*.jar
 test/SharedSecret.IntegrationTests.Runner.Java/build/
+
+# Local Claude Code settings (regenerated per machine)
+.claude/settings.local.json
