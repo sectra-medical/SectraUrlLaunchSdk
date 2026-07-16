@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net10.0": {
+      "sectra.urllaunch.sharedsecret": {
+        "type": "Project"
+      },
+      "sectra.urllaunch.urlaccessstring": {
+        "type": "Project"
+      }
+    }
+  }
+}
