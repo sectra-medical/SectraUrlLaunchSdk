@@ -28,59 +28,46 @@ public class Program {
         Uniview,
     }
 
-    static async Task<int> Main(string[] args) {
-        var hostArgument = new Argument<string>(
-            name: "host",
-            description: "Hostname of launched system") {
-            Arity = new ArgumentArity(1, 1),
+    static int Main(string[] args) {
+        var hostArgument = new Argument<string>("host") {
+            Description = "Hostname of launched system",
+            Arity = ArgumentArity.ExactlyOne,
         };
 
-        var applicationArgument = new Argument<Application>(
-            name: "application",
-            description: "Application name") {
-            Arity = new ArgumentArity(1, 1),
+        var applicationArgument = new Argument<Application>("application") {
+            Description = "Application name",
+            Arity = ArgumentArity.ExactlyOne,
         };
 
-        var userIdOption = new Option<string>(
-            name: "--userId",
-            description: "User ID",
-            getDefaultValue: () => "TestUser");
+        var userIdOption = new Option<string>("--userId") {
+            Description = "User ID",
+            DefaultValueFactory = _ => "TestUser",
+        };
 
-        var patientIdOption = new Option<string>(
-            name: "--patientId",
-            description: "Patient ID",
-            getDefaultValue: () => "12121212-1212");
+        var patientIdOption = new Option<string>("--patientId") {
+            Description = "Patient ID",
+            DefaultValueFactory = _ => "12121212-1212",
+        };
 
-        var mrnIntegrationIdOption = new Option<string>(
-            name: "--mrnIntegrationId",
-            description: "MRN integration ID",
-            getDefaultValue: () => "MrnIntegrationId");
+        var mrnIntegrationIdOption = new Option<string>("--mrnIntegrationId") {
+            Description = "MRN integration ID",
+            DefaultValueFactory = _ => "MrnIntegrationId",
+        };
 
         // Do not expose the shared secret key on command line in production, this option is only included for testing purpose.
-        var sharedSecretKeyOption = new Option<string>(
-            name: "--sharedSecret",
-            description: "Base64 encoded shared secret key (Do not expose the system password on command line in production!)");
+        var sharedSecretKeyOption = new Option<string>("--sharedSecret") {
+            Description = "Base64 encoded shared secret key (Do not expose the system password on command line in production!)",
+        };
 
-        var integratingPartyCertOption = new Option<string>(
-            name: "--integratingPartyPrivateCert",
-            description: "Integrating party certificate subject name (certificate must include private key)");
+        var integratingPartyCertOption = new Option<string>("--integratingPartyPrivateCert") {
+            Description = "Integrating party certificate subject name (certificate must include private key)",
+        };
 
-        var sectraPacsCertOption = new Option<string>(
-            name: "--sectraPacsPublicCert",
-            description: "The Sectra PACS public certificate subject name");
+        var sectraPacsCertOption = new Option<string>("--sectraPacsPublicCert") {
+            Description = "The Sectra PACS public certificate subject name",
+        };
 
-        var rootCommand = new RootCommand("Example implementation of Sectra URL launch");
-        rootCommand.AddArgument(hostArgument);
-        rootCommand.AddArgument(applicationArgument);
-        rootCommand.AddOption(userIdOption);
-        rootCommand.AddOption(patientIdOption);
-        rootCommand.AddOption(mrnIntegrationIdOption);
-        rootCommand.AddOption(sharedSecretKeyOption);
-        rootCommand.AddOption(integratingPartyCertOption);
-        rootCommand.AddOption(sectraPacsCertOption);
-
-        rootCommand.SetHandler(
-            UrlLaunch,
+        var rootCommand = new RootCommand("Example implementation of Sectra URL launch") {
             hostArgument,
             applicationArgument,
             userIdOption,
@@ -88,9 +75,21 @@ public class Program {
             mrnIntegrationIdOption,
             sharedSecretKeyOption,
             integratingPartyCertOption,
-            sectraPacsCertOption);
+            sectraPacsCertOption,
+        };
 
-        return await rootCommand.InvokeAsync(args);
+        rootCommand.SetAction(parseResult =>
+            UrlLaunch(
+                parseResult.GetValue(hostArgument)!,
+                parseResult.GetValue(applicationArgument),
+                parseResult.GetValue(userIdOption) ?? string.Empty,
+                parseResult.GetValue(patientIdOption) ?? string.Empty,
+                parseResult.GetValue(mrnIntegrationIdOption) ?? string.Empty,
+                parseResult.GetValue(sharedSecretKeyOption) ?? string.Empty,
+                parseResult.GetValue(integratingPartyCertOption) ?? string.Empty,
+                parseResult.GetValue(sectraPacsCertOption) ?? string.Empty));
+
+        return rootCommand.Parse(args).Invoke();
     }
 
     /// <summary>
