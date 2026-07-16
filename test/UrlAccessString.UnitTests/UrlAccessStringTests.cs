@@ -1,12 +1,13 @@
 
 using System;
-using Xunit;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Sectra.UrlLaunch.UrlAccessString;
 
+[TestClass]
 public class UrlAccessStringTests {
 
-    [Fact]
+    [TestMethod]
     public void UrlAccessString_GetAccessString_EmptyStringHasEmptyResult() {
         // Arrange
         var parameters = new Parameters();
@@ -15,10 +16,10 @@ public class UrlAccessStringTests {
         var accessString = QueryString.GetQueryString(parameters);
 
         // Assert
-        Assert.Equal(string.Empty, accessString);
+        Assert.AreEqual(string.Empty, accessString);
     }
 
-    [Fact]
+    [TestMethod]
     public void UrlAccessString_GetAccessString_Time() {
         // Arrange
         var parameters = new Parameters();
@@ -29,10 +30,10 @@ public class UrlAccessStringTests {
         var accessString = QueryString.GetQueryStringWithCurrentTime(parameters);
 
         // Assert
-        Assert.Equal($"time={nowSince1970}", accessString);
+        Assert.AreEqual($"time={nowSince1970}", accessString);
     }
 
-    [Fact]
+    [TestMethod]
     public void UrlAccessString_GetAccessString_Parameters() {
         foreach (var kvp in UrlAccessStringTestsData.TestLaunchDictionary) {
             // Arrange & Act
@@ -41,11 +42,11 @@ public class UrlAccessStringTests {
             var accessString = QueryString.GetQueryString(parameters);
 
             // Assert
-            Assert.Equal(expectation, accessString);
+            Assert.AreEqual(expectation, accessString);
         }
     }
 
-    [Fact]
+    [TestMethod]
     public void UrlAccessString_GetAccessString_IDS7_Command() {
         // Arrange
         var parameters = new Parameters {
@@ -56,10 +57,10 @@ public class UrlAccessStringTests {
         var accessString = QueryString.GetQueryString(parameters);
 
         // Assert
-        Assert.Equal("ids7_cmds=open_ipv_window", accessString);
+        Assert.AreEqual("ids7_cmds=open_ipv_window", accessString);
     }
 
-    [Fact]
+    [TestMethod]
     public void UrlAccessString_Parse_Parameters() {
         foreach (var kvp in UrlAccessStringTestsData.TestParseDictionary) {
             // Arrange & Act
@@ -68,17 +69,20 @@ public class UrlAccessStringTests {
             var accessString = QueryString.Parse(queryString);
 
             // Assert
-            Assert.Equivalent(parameters, accessString);
+            // Parameters is a record whose List<> members compare by reference, so a plain
+            // AreEqual would report distinct-but-equivalent lists as unequal. Comparing the
+            // canonical query-string form gives a structural (value) comparison instead.
+            Assert.AreEqual(QueryString.GetQueryString(parameters), QueryString.GetQueryString(accessString));
         }
     }
 
-    [Theory]
-    [InlineData("sop_uid=1.2.3")] // Needs patient and exam context
-    [InlineData("acc_no=req1")] // Needs patient context
-    [InlineData("pat_id=patient&acc_no=req1&exam_id=ex1^ex2")] // Accession numbers and exam id lists needs to be of same length
-    [InlineData("uniview_cmd=show_images")] // Needs patient context
+    [TestMethod]
+    [DataRow("sop_uid=1.2.3")] // Needs patient and exam context
+    [DataRow("acc_no=req1")] // Needs patient context
+    [DataRow("pat_id=patient&acc_no=req1&exam_id=ex1^ex2")] // Accession numbers and exam id lists needs to be of same length
+    [DataRow("uniview_cmd=show_images")] // Needs patient context
     public void UrlAccessString_ParseAndValidate_Parameters(string queryString) {
         // Assert
-        Assert.Throws<ArgumentException>(() => QueryString.Parse(queryString, QueryString.Validate));
+        Assert.ThrowsExactly<ArgumentException>(() => QueryString.Parse(queryString, QueryString.Validate));
     }
 }

@@ -1,11 +1,11 @@
-﻿using System.Text;
-using NUnit.Framework;
+using System.Text;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Sectra.UrlLaunch.Pki;
 
-[TestFixture]
+[TestClass]
 public class EncryptedUrlStringTests {
-    [Test]
+    [TestMethod]
     public void Serialize_WithProperties_SerializesIntoUrlEncodedString_Test() {
         // Arrange
         var sut = new EncryptedUrlString {
@@ -19,15 +19,16 @@ public class EncryptedUrlStringTests {
 
         // Assert
         // Url encoding of '=' is '%3D'
-        Assert.That(result, Does.Contain("YQ%3D%3D"));
-        Assert.That(result, Does.Contain("Yg%3D%3D"));
-        Assert.That(result, Does.Contain("Yw%3D%3D"));
+        StringAssert.Contains(result, "YQ%3D%3D");
+        StringAssert.Contains(result, "Yg%3D%3D");
+        StringAssert.Contains(result, "Yw%3D%3D");
     }
 
 
-    [TestCase(new byte[0], new byte[0], new byte[0], ushort.MinValue)]
-    [TestCase(new byte[] { 0 }, new byte[] { 0 }, new byte[] { 0 }, (ushort)1)]
-    [TestCase(new byte[] { 0 }, new byte[] { 0 }, new byte[] { 0 }, ushort.MaxValue)]
+    [TestMethod]
+    [DataRow(new byte[0], new byte[0], new byte[0], ushort.MinValue)]
+    [DataRow(new byte[] { 0 }, new byte[] { 0 }, new byte[] { 0 }, (ushort)1)]
+    [DataRow(new byte[] { 0 }, new byte[] { 0 }, new byte[] { 0 }, ushort.MaxValue)]
     public void Deserialize_SerializedString_Deserializes_Test(byte[] urlString, byte[] password, byte[] iv, ushort protocolVersion) {
         // Arrange
         var input = new EncryptedUrlString {
@@ -43,18 +44,19 @@ public class EncryptedUrlStringTests {
         var result = EncryptedUrlString.Deserialize(serializedString);
 
         // Assert
-        Assert.That(result.SymmetricallyEncryptedUrlString, Is.EqualTo(input.SymmetricallyEncryptedUrlString));
-        Assert.That(result.EncryptedSymmetricPassword, Is.EqualTo(input.EncryptedSymmetricPassword));
-        Assert.That(result.InitializationVector, Is.EqualTo(input.InitializationVector));
-        Assert.That(result.ProtocolVersion, Is.EqualTo(input.ProtocolVersion));
+        CollectionAssert.AreEqual(input.SymmetricallyEncryptedUrlString, result.SymmetricallyEncryptedUrlString);
+        CollectionAssert.AreEqual(input.EncryptedSymmetricPassword, result.EncryptedSymmetricPassword);
+        CollectionAssert.AreEqual(input.InitializationVector, result.InitializationVector);
+        Assert.AreEqual(input.ProtocolVersion, result.ProtocolVersion);
     }
 
-    [TestCase("")]
+    [TestMethod]
+    [DataRow("")]
     public void Deserialize_StringWithMissingProperties_DeserializesWithoutThoseMissingProperties_Test(string input) {
         // Act
         var result = EncryptedUrlString.Deserialize(input);
 
         // Assert
-        Assert.That(result, Is.Not.Null);
+        Assert.IsNotNull(result);
     }
 }

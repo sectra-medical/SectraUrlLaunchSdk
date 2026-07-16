@@ -1,15 +1,16 @@
 using System;
 using System.Security.Cryptography;
 using System.Text;
-using Xunit;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Sectra.UrlLaunch.SharedSecret;
 
+[TestClass]
 public class OneTimeSignatureReplayTests {
 
     private static readonly string PlainText = "The quick brown fox jumps over the lazy dog";
 
-    [Fact]
+    [TestMethod]
     public void Verify_SameDataTwice_WithSharedNonces_ThrowsOnSecondVerify() {
         var key = Rng.GetBytes(32);
         var nonces = new ConcurrentQueueWrapper<OneTimeSignature.NonceAndTimestamp>();
@@ -17,12 +18,12 @@ public class OneTimeSignatureReplayTests {
 
         OneTimeSignature.Verify(signedData, key, nonces);
 
-        var ex = Assert.Throws<CryptographicException>(
+        var ex = Assert.ThrowsExactly<CryptographicException>(
             () => OneTimeSignature.Verify(signedData, key, nonces));
-        Assert.Equal("Nonce reused, possible replay attack!", ex.Message);
+        Assert.AreEqual("Nonce reused, possible replay attack!", ex.Message);
     }
 
-    [Fact]
+    [TestMethod]
     public void Verify_SameDataTwice_WithSeparateNonceStores_BothSucceed() {
         // Demonstrates the distributed system weakness: separate nonce stores
         // cannot detect replays across process boundaries
@@ -34,11 +35,11 @@ public class OneTimeSignatureReplayTests {
         var data1 = OneTimeSignature.Verify(signedData, key, nonces1);
         var data2 = OneTimeSignature.Verify(signedData, key, nonces2);
 
-        Assert.Equal(PlainText, Encoding.UTF8.GetString(data1));
-        Assert.Equal(PlainText, Encoding.UTF8.GetString(data2));
+        Assert.AreEqual(PlainText, Encoding.UTF8.GetString(data1));
+        Assert.AreEqual(PlainText, Encoding.UTF8.GetString(data2));
     }
 
-    [Fact]
+    [TestMethod]
     public void Verify_ExpiredTimestamp_Throws() {
         var key = Rng.GetBytes(32);
         var nonces = new ConcurrentQueueWrapper<OneTimeSignature.NonceAndTimestamp>();
@@ -52,16 +53,16 @@ public class OneTimeSignatureReplayTests {
             // Restore real time for verification
             DateTimeProvider.ResetToDefault();
 
-            var ex = Assert.Throws<ArgumentException>(
+            var ex = Assert.ThrowsExactly<ArgumentException>(
                 () => OneTimeSignature.Verify(signedData, key, nonces));
-            Assert.Contains("Timestamp too old", ex.Message);
+            StringAssert.Contains(ex.Message, "Timestamp too old");
         }
         finally {
             DateTimeProvider.ResetToDefault();
         }
     }
 
-    [Fact]
+    [TestMethod]
     public void Verify_TamperedSignature_Throws() {
         var key = Rng.GetBytes(32);
         var nonces = new ConcurrentQueueWrapper<OneTimeSignature.NonceAndTimestamp>();
@@ -70,11 +71,11 @@ public class OneTimeSignatureReplayTests {
         // Flip a bit in the HMAC signature (first 32 bytes)
         signedData[0] ^= 0xFF;
 
-        Assert.Throws<CryptographicException>(
+        Assert.ThrowsExactly<CryptographicException>(
             () => OneTimeSignature.Verify(signedData, key, nonces));
     }
 
-    [Fact]
+    [TestMethod]
     public void Verify_TamperedPayload_Throws() {
         var key = Rng.GetBytes(32);
         var nonces = new ConcurrentQueueWrapper<OneTimeSignature.NonceAndTimestamp>();
@@ -86,11 +87,11 @@ public class OneTimeSignatureReplayTests {
             signedData[73] ^= 0xFF;
         }
 
-        Assert.Throws<CryptographicException>(
+        Assert.ThrowsExactly<CryptographicException>(
             () => OneTimeSignature.Verify(signedData, key, nonces));
     }
 
-    [Fact]
+    [TestMethod]
     public void Verify_MultipleDistinctSignatures_AllSucceed() {
         var key = Rng.GetBytes(32);
         var nonces = new ConcurrentQueueWrapper<OneTimeSignature.NonceAndTimestamp>();
@@ -99,7 +100,7 @@ public class OneTimeSignatureReplayTests {
             var signedData = OneTimeSignature.Sign(
                 Encoding.UTF8.GetBytes($"message {i}"), key);
             var result = OneTimeSignature.Verify(signedData, key, nonces);
-            Assert.Equal($"message {i}", Encoding.UTF8.GetString(result));
+            Assert.AreEqual($"message {i}", Encoding.UTF8.GetString(result));
         }
     }
 

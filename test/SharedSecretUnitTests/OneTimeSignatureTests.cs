@@ -6,10 +6,11 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Xunit;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Sectra.UrlLaunch.SharedSecret;
 
+[TestClass]
 public class OneTimeSignatureTests {
     private const string Rsa2048Cert =
 @"MIIDADCCAeigAwIBAgIQaRtwaRDmlpFEpka5e/Wa+TANBgkqhkiG9w0BAQsFADATMREwDwYDVQQDDAhUZXN0IFJTQTAeFw0yMjA1MzEwODI1NTJaFw0yMzA1MzEwODQ1NTJaMBMxETAPBgNVBAMMCFRlc3QgUlNBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxFVQHbI2lHGVUZehtiLKCeII3mKyoGDUUmAOegYKquL2ME6u0k4xEHgDTyorQ/xm+QhCCh23OE5ltzcc3yxczFSQ3rK9Y7goa5ebWeTnArxvZxkrdbMG+I2aPoahPG7kUVPjq/SInzfLf71I+mH0YdOgo87zk4Br9GBzbYu26Xgk5H4ZP+nCdAT/VSPON0nZriEWKhUolaxzoZDoyM6/chzwbMTiO9BBDZB+quXKk7DLHUJAo6LCxdB77N/Hj2J+HKZWMdGlO+qL4+rdp3NL2/C4l93XVijCtKc0cP41Em50HcdhxyP5YZ5OpjcSOaKkX60Fu5SXV2T+t30gBE2/nQIDAQABo1AwTjAOBgNVHQ8BAf8EBAMCB4AwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMBMB0GA1UdDgQWBBSuyq7GWL55fq0n6sMkvGGa+7YQlzANBgkqhkiG9w0BAQsFAAOCAQEAPU87c5izmKGcjIumH0kNxPZaSwkHrNQ8I+WTPdaCFs+Iz9D+/D/YlQZQTEkudgGz+hNy4VFFqCJTf76nrxpeXzbJIfmlUgsJMsBi3bpuVT40IWTkstKn1pmL81vP3c13gOegZbWzfB5/fkaquyCFqX7MM1v0iMUutnUrRyo4pyuS9uzjlzr72ZL1EwUG8aR1E6WB3usTNY5xXwADNyQ5sFFuVbC6IoqCdqk284x2emOC4Acokjv4EqluRG+RIppl4CB9i/rQBTcMm34Joe3ah69pGQDpHhXDPGkL4mHkRqAzfZyct5G4L4l5f7QAbaGCKddwpkeadxkDpUTI
@@ -62,7 +63,7 @@ tNKSFvbZP4ACUeqP3bLG8cSLYmFfM9FD/c+zSoEHBEDjq5EXJjaRMkyqGPT03j1HgBAFe0KzBYdjyFH9
 
     private static string plainTextTestData = "The quick brown fox jumps over the lazy dog";
 
-    [Fact]
+    [TestMethod]
     public void OneTimeSignature_SignUsingHmacAndVerify_Succeeds() {
         var key = Rng.GetBytes(32);
         var signedData = OneTimeSignature.Sign(
@@ -70,15 +71,15 @@ tNKSFvbZP4ACUeqP3bLG8cSLYmFfM9FD/c+zSoEHBEDjq5EXJjaRMkyqGPT03j1HgBAFe0KzBYdjyFH9
 
         var data = OneTimeSignature.Verify(signedData, key);
 
-        Assert.Equal(plainTextTestData, Encoding.UTF8.GetString(data));
+        Assert.AreEqual(plainTextTestData, Encoding.UTF8.GetString(data));
     }
 
-    [Fact]
+    [TestMethod]
     public void OneTimeSignature_SignUsingHmacInvalidKeyAndVerify_Fails() {
         var signedData = OneTimeSignature.Sign(
             Encoding.UTF8.GetBytes(plainTextTestData), Rng.GetBytes(32));
 
-        Assert.Throws<CryptographicException>(() => OneTimeSignature.Verify(signedData, Rng.GetBytes(32)));
+        Assert.ThrowsExactly<CryptographicException>(() => OneTimeSignature.Verify(signedData, Rng.GetBytes(32)));
     }
 
     internal class FileQueue : IConcurrentQueue<OneTimeSignature.NonceAndTimestamp> {
@@ -148,7 +149,7 @@ tNKSFvbZP4ACUeqP3bLG8cSLYmFfM9FD/c+zSoEHBEDjq5EXJjaRMkyqGPT03j1HgBAFe0KzBYdjyFH9
     }
 
 
-    [Fact]
+    [TestMethod]
     public void OneTimeSignature_VerifyWithCustomBackingStore_Succeeds() {
         var key = Rng.GetBytes(32);
         var signedData = OneTimeSignature.Sign(
@@ -157,20 +158,20 @@ tNKSFvbZP4ACUeqP3bLG8cSLYmFfM9FD/c+zSoEHBEDjq5EXJjaRMkyqGPT03j1HgBAFe0KzBYdjyFH9
 
         var data = OneTimeSignature.Verify(signedData, key, myNonceBacking);
 
-        Assert.Equal(plainTextTestData, Encoding.UTF8.GetString(data));
-        var ex = Assert.Throws<CryptographicException>(
+        Assert.AreEqual(plainTextTestData, Encoding.UTF8.GetString(data));
+        var ex = Assert.ThrowsExactly<CryptographicException>(
                     () => OneTimeSignature.Verify(signedData, key, myNonceBacking));
-        Assert.Equal("Nonce reused, possible replay attack!", ex.Message);
+        Assert.AreEqual("Nonce reused, possible replay attack!", ex.Message);
     }
 
-    [Fact]
+    [TestMethod]
     public async Task OneTimeSignature_VerifyConcurrent_Succeeds() {
         var task1 = Task.Run(ThreadRun);
         var task2 = Task.Run(ThreadRun);
 
         await Task.WhenAll(task1, task2);
 
-        Assert.True(true);
+        Assert.IsTrue(true);
     }
 
     private static void ThreadRun() {

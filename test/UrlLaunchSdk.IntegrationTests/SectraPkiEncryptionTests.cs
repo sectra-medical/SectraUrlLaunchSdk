@@ -1,22 +1,22 @@
-﻿using System.Security.Cryptography;
-using NUnit.Framework;
+using System.Security.Cryptography;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sectra.UrlLaunch.Pki;
 
 namespace Sectra.UrlLaunch.IntegrationTests;
 
-[TestFixture]
+[TestClass]
 public class SectraPkiEncryptionTests {
     private static string plainTextTestData = "The quick brown fox jumps over the lazy dog";
-    [Test]
+    [TestMethod]
     public void IsPkiEncryption_BackwardCompatibilityCheck() {
         // Arrange
         var encryptedString = "seus=1&esp=1&iv=1&v=1";
 
         // Assert
-        Assert.That(SectraPkiEncryption.IsPkiEncryption(encryptedString), Is.True);
+        Assert.IsTrue(SectraPkiEncryption.IsPkiEncryption(encryptedString));
     }
 
-    [Test]
+    [TestMethod]
     public void IsPkiEncryption_DetectsEncryptedLaunchStringUsingKeys() {
         // Arrange
         var integratingPartyKey = RSA.Create(2048);
@@ -26,10 +26,10 @@ public class SectraPkiEncryptionTests {
         var encryptedString = SectraPkiEncryption.Secure(plainTextTestData, integratingPartyKey, systemKey);
 
         // Assert
-        Assert.That(SectraPkiEncryption.IsPkiEncryption(encryptedString), Is.True);
+        Assert.IsTrue(SectraPkiEncryption.IsPkiEncryption(encryptedString));
     }
 
-    [Test]
+    [TestMethod]
     public void IsPkiEncryption_DetectsEncryptedLaunchStringUsingCertificates() {
         // Arrange
         var integratingPartyCert = TestUtils.GetCertificate("integrating_party_test_cert.pfx");
@@ -39,10 +39,10 @@ public class SectraPkiEncryptionTests {
         var encryptedString = SectraPkiEncryption.Secure(plainTextTestData, integratingPartyCert, systemCert);
 
         // Assert
-        Assert.That(SectraPkiEncryption.IsPkiEncryption(encryptedString), Is.True);
+        Assert.IsTrue(SectraPkiEncryption.IsPkiEncryption(encryptedString));
     }
 
-    [Test]
+    [TestMethod]
     public void SectraPkiEncryption_CanSecureAndViewStringUsingKeys() {
         // Arrange
         var integratingPartyKey = RSA.Create(2048);
@@ -53,10 +53,10 @@ public class SectraPkiEncryptionTests {
         var decryptedString = SectraPkiEncryption.View(encryptedString, systemKey, integratingPartyKey);
 
         // Assert
-        Assert.That(plainTextTestData, Is.EqualTo(decryptedString));
+        Assert.AreEqual(plainTextTestData, decryptedString);
     }
 
-    [Test]
+    [TestMethod]
     public void SectraPkiEncryption_CanSecureAndViewStringUsingCertificates() {
         // Arrange
         var integratingPartyCert = TestUtils.GetCertificate("integrating_party_test_cert.pfx");
@@ -67,7 +67,7 @@ public class SectraPkiEncryptionTests {
         var decryptedString = SectraPkiEncryption.View(encryptedString, systemCert, integratingPartyCert);
 
         // Assert
-        Assert.That(plainTextTestData, Is.EqualTo(decryptedString));
+        Assert.AreEqual(plainTextTestData, decryptedString);
     }
 
 }

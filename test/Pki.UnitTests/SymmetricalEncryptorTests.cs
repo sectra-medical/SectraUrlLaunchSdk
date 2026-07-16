@@ -1,12 +1,14 @@
-﻿using System.Text;
-using NUnit.Framework;
+using System;
+using System.Text;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Sectra.UrlLaunch.Pki;
 
-[TestFixture]
+[TestClass]
 public class SymmetricalEncryptorTests {
-    [TestCase("some input")]
-    [TestCase("some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string")]
+    [TestMethod]
+    [DataRow("some input")]
+    [DataRow("some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string")]
     public void Decrypt_EncryptedString_DecryptsString_Test(string input) {
         // Arrange
         var inputBytes = Encoding.UTF8.GetBytes(input);
@@ -18,10 +20,10 @@ public class SymmetricalEncryptorTests {
         var result = SymmetricalEncryptor.Decrypt(encryptedData, key, iv);
 
         // Assert
-        Assert.That(Encoding.UTF8.GetString(result), Is.EqualTo(input));
+        Assert.AreEqual(input, Encoding.UTF8.GetString(result));
     }
 
-    [Test]
+    [TestMethod]
     public void DecryptStringFromBytes_NullArguments_Throw_Test() {
         // Arrange
         var sut = new SymmetricalEncryptor();
@@ -29,13 +31,13 @@ public class SymmetricalEncryptorTests {
         // Act
         // Assert
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-        Assert.That(() => SymmetricalEncryptor.Decrypt(null, new byte[1], new byte[1]), Throws.ArgumentNullException);
-        Assert.That(() => SymmetricalEncryptor.Decrypt(new byte[1], null, new byte[1]), Throws.ArgumentNullException);
-        Assert.That(() => SymmetricalEncryptor.Decrypt(new byte[1], new byte[1], null), Throws.ArgumentNullException);
+        Assert.ThrowsExactly<ArgumentNullException>(() => SymmetricalEncryptor.Decrypt(null, new byte[1], new byte[1]));
+        Assert.ThrowsExactly<ArgumentNullException>(() => SymmetricalEncryptor.Decrypt(new byte[1], null, new byte[1]));
+        Assert.ThrowsExactly<ArgumentNullException>(() => SymmetricalEncryptor.Decrypt(new byte[1], new byte[1], null));
 
-        Assert.That(() => SymmetricalEncryptor.Decrypt(new byte[0], new byte[1], new byte[1]), Throws.ArgumentNullException);
-        Assert.That(() => SymmetricalEncryptor.Decrypt(new byte[1], new byte[0], new byte[1]), Throws.ArgumentNullException);
-        Assert.That(() => SymmetricalEncryptor.Decrypt(new byte[1], new byte[1], new byte[0]), Throws.ArgumentNullException);
+        Assert.ThrowsExactly<ArgumentNullException>(() => SymmetricalEncryptor.Decrypt(new byte[0], new byte[1], new byte[1]));
+        Assert.ThrowsExactly<ArgumentNullException>(() => SymmetricalEncryptor.Decrypt(new byte[1], new byte[0], new byte[1]));
+        Assert.ThrowsExactly<ArgumentNullException>(() => SymmetricalEncryptor.Decrypt(new byte[1], new byte[1], new byte[0]));
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
     }
 }

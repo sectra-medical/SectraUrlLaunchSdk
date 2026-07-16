@@ -1,13 +1,15 @@
-﻿using System.Security.Cryptography.X509Certificates;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Sectra.UrlLaunch.Pki;
 
+[TestClass]
 public class UrlStringSignerTests {
-    [TestCase("")]
-    [TestCase("some input string")]
-    [TestCase("some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string")]
+    [TestMethod]
+    [DataRow("")]
+    [DataRow("some input string")]
+    [DataRow("some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string")]
     public void Sign_PlainTextString_SignString_Test(string input) {
         // Arrange
         var cert = TestUtils.GetCertificate();
@@ -17,10 +19,10 @@ public class UrlStringSignerTests {
         var result = UrlStringSigner.Sign(Encoding.UTF8.GetBytes(input), privateKey);
 
         // Assert
-        Assert.That(result, Is.Not.EqualTo(input));
+        Assert.AreNotEqual<object>(input, result);
     }
 
-    [Test]
+    [TestMethod]
     public void Verify_SignedString_Verifies_Test() {
         // Arrange
         var input = "some string";
@@ -35,6 +37,6 @@ public class UrlStringSignerTests {
         var result = UrlStringSigner.Verify(signedString, publicKey);
 
         // Assert
-        Assert.That(result, Is.True);
+        Assert.IsTrue(result);
     }
 }
