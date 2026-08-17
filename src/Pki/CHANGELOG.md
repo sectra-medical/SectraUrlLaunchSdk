@@ -1,5 +1,21 @@
 # CHANGELOG for Sectra.UrlLaunch.Pki
 
+## [1.1.0] - 2026-11-27
+### What's New?
+- Added support for .NET 10.0, replacing the .NET 8.0 target. Applications on .NET 8 are still supported through the .NET Standard 2.1 target.
+
+### Changed
+- Certificate problems (missing public or private key) now throw `InvalidOperationException` instead of the generic `Exception`, so they can be caught specifically.
+
+### Fixed
+- Cryptographic transforms and algorithm instances are now disposed, without closing streams owned by the caller.
+
+### Internal
+- General code-quality work: code style is now enforced at build time via `.editorconfig`, and NuGet dependencies are pinned with lock files.
+- Added unit tests covering malformed and truncated encrypted input.
+
+---
+
 ## [1.0.2] - 2025-05-09
 ### Fixed
 - Dotnet version compatibility issues

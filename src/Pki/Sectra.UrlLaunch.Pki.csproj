@@ -14,12 +14,18 @@
         <Title>Sectra URL Launch PKI Encryption</Title>
         <Description>This package can be used for encrypting URL-launch access strings using the Sectra PKI encryption algorithm.</Description>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <VersionPrefix>1.0.2</VersionPrefix>
+        <VersionPrefix>1.1.0</VersionPrefix>
         <PackageReleaseNotes>
-            Release notes for Sectra.UrlLaunch.Pki v1.0.2:
+            Release notes for Sectra.UrlLaunch.Pki v1.1.0:
+
+            What's New?
+            - Added support for .NET 10.0, replacing the .NET 8.0 target. Applications on .NET 8 are still supported through the .NET Standard 2.1 target.
+
+            Changed
+            - Certificate problems (missing public or private key) now throw InvalidOperationException instead of the generic Exception.
 
             Fixed
-            - Dotnet version compatibility issues
+            - Cryptographic transforms and algorithm instances are now disposed, without closing streams owned by the caller.
 
             For detailed release history, see: https://github.com/sectra-medical/SectraUrlLaunchSdk/blob/main/src/Pki/CHANGELOG.md
         </PackageReleaseNotes>
