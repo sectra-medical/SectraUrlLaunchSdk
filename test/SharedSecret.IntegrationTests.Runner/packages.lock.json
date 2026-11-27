@@ -12,12 +12,6 @@
         "type": "Project"
       }
     },
-    "net10.0/win-x86": {},
-    "net9.0": {
-      "sectra.urllaunch.sharedsecret": {
-        "type": "Project"
-      }
-    },
-    "net9.0/win-x86": {}
+    "net10.0/win-x86": {}
   }
 }
