@@ -170,8 +170,6 @@ tNKSFvbZP4ACUeqP3bLG8cSLYmFfM9FD/c+zSoEHBEDjq5EXJjaRMkyqGPT03j1HgBAFe0KzBYdjyFH9
         var task2 = Task.Run(ThreadRun);
 
         await Task.WhenAll(task1, task2);
-
-        Assert.IsTrue(true);
     }
 
     private static void ThreadRun() {

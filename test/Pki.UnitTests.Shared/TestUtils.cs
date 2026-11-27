@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 
@@ -10,14 +11,16 @@ public static class TestUtils {
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = $"{assembly.GetName().Name}.{certName}";
 
-        byte[] certData;
+        using var stream = assembly.GetManifestResourceStream(resourceName)
+            ?? throw new InvalidOperationException($"Embedded resource '{resourceName}' not found.");
+        using var destination = new MemoryStream();
+        stream.CopyTo(destination);
+        var certData = destination.ToArray();
 
-        using (var stream = assembly.GetManifestResourceStream(resourceName))
-        using (var destination = new MemoryStream()) {
-            stream.CopyTo(destination);
-            certData = destination.ToArray();
-        }
-
+#if NET9_0_OR_GREATER
+        return X509CertificateLoader.LoadPkcs12(certData, certificatePassword, X509KeyStorageFlags.PersistKeySet);
+#else
         return new X509Certificate2(certData, certificatePassword, X509KeyStorageFlags.PersistKeySet);
+#endif
     }
 }
