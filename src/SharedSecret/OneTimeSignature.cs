@@ -164,7 +164,7 @@ internal class OneTimeSignature {
         byte[] key,
         IConcurrentQueue<NonceAndTimestamp> usedNonces) {
         var hmac = new HMACSHA256(key);
-        int signatureByteSize = hmac.HashSize / 8;
+        var signatureByteSize = hmac.HashSize / 8;
         return VerifySignature(data, signatureByteSize,
             (signedData, signature) => hmac.ComputeHash(signedData).SequenceEqualConstantTime(signature, signatureByteSize),
             usedNonces);

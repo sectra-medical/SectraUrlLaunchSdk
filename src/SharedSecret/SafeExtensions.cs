@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 
 namespace Sectra.UrlLaunch.SharedSecret;
+
 internal static class SafeExtensions {
     /// <summary>
     /// Compares two strings for equality in constant time. Should be used for
@@ -54,12 +55,12 @@ internal static class SafeExtensions {
         //       on the same hardware, regardless of input.
 
         const byte padChar = 0x1c;
-        first.Concat(Enumerable.Repeat(padChar, maxExpectedLength - first.Length)).ToArray();
-        second.Concat(Enumerable.Repeat(padChar, maxExpectedLength - second.Length)).ToArray();
+        var newFirst = first.Concat(Enumerable.Repeat(padChar, maxExpectedLength - first.Length)).ToArray();
+        var newSecond = second.Concat(Enumerable.Repeat(padChar, maxExpectedLength - second.Length)).ToArray();
 
-        int differ = 0;
-        for (int i = 0; i < first.Length; i++) {
-            differ |= first[i] ^ second[i];
+        var differ = 0;
+        for (var i = 0; i < newFirst.Length; i++) {
+            differ |= newFirst[i] ^ newSecond[i];
         }
         return differ == 0;
     }

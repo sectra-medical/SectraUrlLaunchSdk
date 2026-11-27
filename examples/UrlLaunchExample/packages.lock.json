@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net10.0": {
+      "System.CommandLine": {
+        "type": "Direct",
+        "requested": "[3.0.0, 3.0.0]",
+        "resolved": "3.0.0",
+        "contentHash": "swNpSTl0iYJeBuvYYfaY+VxzZ5YC8wklwkqDCNOq2aTQqJzjauJfh/O3Zw93nwxspWrxvZTjT45f8VPR0ParEA=="
+      },
+      "sectra.urllaunch.pki": {
+        "type": "Project"
+      },
+      "sectra.urllaunch.sharedsecret": {
+        "type": "Project"
+      },
+      "sectra.urllaunch.urlaccessstring": {
+        "type": "Project"
+      }
+    }
+  }
+}

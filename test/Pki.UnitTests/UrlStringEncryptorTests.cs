@@ -1,34 +1,35 @@
-﻿using NUnit.Framework;
 using System;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Sectra.UrlLaunch.Pki;
-[TestFixture]
+
+[TestClass]
 public class UrlStringEncryptorTests {
-    [Test]
+    [TestMethod]
     public void Decrypt_NullSecureString_ThrowArgumentNullException_Test() {
         // Arrange
         // Act
         // Assert
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-        Assert.That(() => UrlStringEncryptor.Decrypt(null, RSA.Create()), Throws.ArgumentNullException);
+        Assert.ThrowsExactly<ArgumentNullException>(() => UrlStringEncryptor.Decrypt(null, RSA.Create()));
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
     }
 
-    [Test]
+    [TestMethod]
     public void Decrypt_NullKey_ThrowsArgumentNullException_Test() {
         // Arrange
         // Act
         // Assert
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-        Assert.That(() => UrlStringEncryptor.Decrypt(new EncryptedUrlString(), null), Throws.ArgumentNullException);
+        Assert.ThrowsExactly<ArgumentNullException>(() => UrlStringEncryptor.Decrypt(new EncryptedUrlString(), null));
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
     }
 
-    [Test]
+    [TestMethod]
     public void Encrypt_PlainTextString_EncryptString_Test() {
         // Arrange
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
@@ -39,13 +40,14 @@ public class UrlStringEncryptorTests {
         var result = UrlStringEncryptor.Encrypt(input, RSA.Create());
 
         // Assert
-        Assert.That(result, Is.Not.EqualTo(input));
+        Assert.AreNotEqual<object>(input, result);
     }
 
-    [TestCase("", "")]
-    [TestCase("test", "")]
-    [TestCase(
-        "some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string",
+    [TestMethod]
+    [DataRow("", "")]
+    [DataRow("test", "")]
+    [DataRow(
+        "some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string some really long input string",
         "some really long signature some really long signature some really long signature some really long signature some really long signature some really long signature some really long signature some really long signature some really long signature some really long signature some really long signature")]
     public void Decrypt_EncryptedString_ReturnPlainTextString_Test(string inputString, string signature) {
         // Arrange
@@ -63,10 +65,10 @@ public class UrlStringEncryptorTests {
         var result = UrlStringEncryptor.Decrypt(encryptedString, decryptKey);
 
         // Assert
-        Assert.That(result.UrlString, Is.EqualTo(urlStringBytes));
+        CollectionAssert.AreEqual(urlStringBytes, result.UrlString);
     }
 
-    [Test]
+    [TestMethod]
     public void Encrypt_TooLongSignature_ThrowOutOfRangeException_Test() {
         // Arrange
         var inputString = "some input string";
@@ -82,14 +84,14 @@ public class UrlStringEncryptorTests {
 
         // Act
         // Assert
-        Assert.That(() => {
+        Assert.Throws<ArgumentOutOfRangeException>(() => {
             var result = UrlStringEncryptor.Encrypt(input, encryptKey);
             Console.WriteLine(result.Serialize());
-        }, Throws.InstanceOf<ArgumentOutOfRangeException>());
+        });
     }
 
 
-    [Test]
+    [TestMethod]
     public void Decrypt_TooLongSignature_ThrowOutOfRangeException_Test() {
         // Arrange
         var cert = TestUtils.GetCertificate();
@@ -102,16 +104,17 @@ public class UrlStringEncryptorTests {
 
         // Act
         // Assert
-        Assert.That(() => UrlStringEncryptor.Decrypt(encryptedString, decryptKey), Throws.InstanceOf<ArgumentOutOfRangeException>(), $"If this test fails, you may have to update the input string. Use the {nameof(Encrypt_TooLongSignature_ThrowOutOfRangeException_Test)} test with the {nameof(ArgumentOutOfRangeException)} line in {nameof(UrlStringEncryptor)}.{nameof(UrlStringEncryptor.Encrypt)} method commented out in order to get the input written to standard out.");
+        Assert.Throws<ArgumentOutOfRangeException>(() => UrlStringEncryptor.Decrypt(encryptedString, decryptKey), $"If this test fails, you may have to update the input string. Use the {nameof(Encrypt_TooLongSignature_ThrowOutOfRangeException_Test)} test with the {nameof(ArgumentOutOfRangeException)} line in {nameof(UrlStringEncryptor)}.{nameof(UrlStringEncryptor.Encrypt)} method commented out in order to get the input written to standard out.");
     }
 
-    [TestCase(0)]
-    [TestCase(3)]
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(3)]
     public void Decrypt_DecryptedUrlStringAndSignatureWithNoData_ThrowARgumentException_Test(int dataLength) {
         // Arrange
         var cert = TestUtils.GetCertificate();
 
-        var encryptedData = SymmetricalEncryptor.Encrypt(new byte[dataLength], out byte[] key, out byte[] iv);
+        var encryptedData = SymmetricalEncryptor.Encrypt(new byte[dataLength], out var key, out var iv);
         var encryptedKey = cert.GetRSAPublicKey()!.Encrypt(key, RSAEncryptionPadding.OaepSHA1);
 
         var input = new EncryptedUrlString {
@@ -122,10 +125,10 @@ public class UrlStringEncryptorTests {
 
         // Act
         // Assert
-        Assert.That(() => UrlStringEncryptor.Decrypt(input, cert.GetRSAPrivateKey()!), Throws.ArgumentException);
+        Assert.ThrowsExactly<ArgumentException>(() => UrlStringEncryptor.Decrypt(input, cert.GetRSAPrivateKey()!));
     }
 
-    [Test]
+    [TestMethod]
     public void Decrypt_DecryptedSignatureLengthExceedsLengthOfData_ThrowArgumentException_Test() {
         // Arrange
         var cert = TestUtils.GetCertificate();
@@ -147,6 +150,7 @@ public class UrlStringEncryptorTests {
 
         // Act
         // Assert
-        Assert.That(() => UrlStringEncryptor.Decrypt(input, cert.GetRSAPrivateKey()!), Throws.ArgumentException.With.Message.Contain("signature"));
+        var ex = Assert.ThrowsExactly<ArgumentException>(() => UrlStringEncryptor.Decrypt(input, cert.GetRSAPrivateKey()!));
+        StringAssert.Contains(ex.Message, "signature");
     }
 }

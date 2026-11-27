@@ -1,11 +1,12 @@
-﻿using NUnit.Framework;
 using System;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Sectra.UrlLaunch.Pki;
-[TestFixture]
+
+[TestClass]
 public class UrlLaunchSecurityTests {
-    [Test]
+    [TestMethod]
     public void View_EncryptedStringMissingProperties_ThrowArgumentException_Test() {
         // Arrange
         var testCertificate = TestUtils.GetCertificate();
@@ -14,11 +15,11 @@ public class UrlLaunchSecurityTests {
 
         // Act
         // Assert
-        Assert.That(() => sut.View(new EncryptedUrlString(), testCertificate.GetRSAPrivateKey()!, testCertificate.GetRSAPublicKey()!), Throws.ArgumentException);
-        Assert.That(() => sut.View(new EncryptedUrlString(), testCertificate, testCertificate), Throws.ArgumentException);
+        Assert.ThrowsExactly<ArgumentException>(() => sut.View(new EncryptedUrlString(), testCertificate.GetRSAPrivateKey()!, testCertificate.GetRSAPublicKey()!));
+        Assert.ThrowsExactly<ArgumentException>(() => sut.View(new EncryptedUrlString(), testCertificate, testCertificate));
     }
 
-    [Test]
+    [TestMethod]
     public void Secure_ValidCertificate_IncludeCurrentProtocolVersionOfLibrary_Test() {
         // Arrange
         var testCertificate = TestUtils.GetCertificate();
@@ -29,10 +30,10 @@ public class UrlLaunchSecurityTests {
         var secureString = sut.Secure("some string", testCertificate.GetRSAPrivateKey()!, testCertificate.GetRSAPublicKey()!);
 
         // Assert
-        Assert.That(secureString.ProtocolVersion, Is.EqualTo(UrlLaunchSecurity.ProtocolVersion));
+        Assert.AreEqual(UrlLaunchSecurity.ProtocolVersion, secureString.ProtocolVersion);
     }
 
-    [Test]
+    [TestMethod]
     [Obsolete("Testing obsolete functionality.")]
     public void View_EncryptedStringMissingProperties_ThrowArgumentException_Test_Obsolete() {
         // Arrange
@@ -42,11 +43,11 @@ public class UrlLaunchSecurityTests {
 
         // Act
         // Assert
-        Assert.That(() => sut.View(new EncryptedUrlString(), testCertificate.GetRSAPrivateKey()!, testCertificate.PublicKey), Throws.ArgumentException);
-        Assert.That(() => sut.View(new EncryptedUrlString(), testCertificate, testCertificate), Throws.ArgumentException);
+        Assert.ThrowsExactly<ArgumentException>(() => sut.View(new EncryptedUrlString(), testCertificate.GetRSAPrivateKey()!, testCertificate.PublicKey));
+        Assert.ThrowsExactly<ArgumentException>(() => sut.View(new EncryptedUrlString(), testCertificate, testCertificate));
     }
 
-    [Test]
+    [TestMethod]
     [Obsolete("Testing obsolete functionality.")]
     public void Secure_ValidCertificate_IncludeCurrentProtocolVersionOfLibrary_Test_Obsolete() {
         // Arrange
@@ -58,6 +59,6 @@ public class UrlLaunchSecurityTests {
         var secureString = sut.Secure("some string", testCertificate.GetRSAPrivateKey()!, testCertificate.PublicKey);
 
         // Assert
-        Assert.That(secureString.ProtocolVersion, Is.EqualTo(UrlLaunchSecurity.ProtocolVersion));
+        Assert.AreEqual(UrlLaunchSecurity.ProtocolVersion, secureString.ProtocolVersion);
     }
 }

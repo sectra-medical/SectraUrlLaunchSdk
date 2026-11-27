@@ -1,6 +1,7 @@
 ﻿using System.Security.Cryptography;
 
 namespace Sectra.UrlLaunch.SharedSecret;
+
 internal class Rng {
 
     public static byte[] GetBytes(int size) {

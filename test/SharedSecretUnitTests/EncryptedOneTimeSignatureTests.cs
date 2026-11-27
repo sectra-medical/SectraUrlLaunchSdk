@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Xunit;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Sectra.UrlLaunch.SharedSecret;
+
+[TestClass]
 public class EncryptedOneTimeSignatureTests {
 
     private const string Rsa2048Cert =
@@ -38,7 +40,7 @@ vSOxu7gqNsseRYQzQhHMk/nNJ5H0bSh/PkRHX8LoBr0655yX9siYyfpQ7bDzgVl+O6VsAh+m6s+zt3Vt
     private static string plainTextTestData = "The quick brown fox jumps over the lazy dog";
 
 
-    [Fact]
+    [TestMethod]
     public void EncryptedOneTimeSignature_SignUsingHmacAndVerify_Succeeds() {
         var key = SymmetricEncryption.GenerateKey();
         var signedCipherText = EncryptedOneTimeSignature.EncryptAndSign(
@@ -46,16 +48,16 @@ vSOxu7gqNsseRYQzQhHMk/nNJ5H0bSh/PkRHX8LoBr0655yX9siYyfpQ7bDzgVl+O6VsAh+m6s+zt3Vt
 
         var plainText = EncryptedOneTimeSignature.VerifyAndDecrypt(signedCipherText.ToArray(), key).ToArray();
 
-        Assert.Equal(plainTextTestData, Encoding.UTF8.GetString(plainText));
+        Assert.AreEqual(plainTextTestData, Encoding.UTF8.GetString(plainText));
     }
 
-    [Fact]
+    [TestMethod]
     public void EncryptedOneTimeSignature_SignStringUsingHmacAndVerify_Succeeds() {
         var key = SymmetricEncryption.GenerateKey();
         var signedCipherText = EncryptedOneTimeSignature.EncryptAndSign(plainTextTestData, key);
 
         var plainText = EncryptedOneTimeSignature.VerifyAndDecrypt(signedCipherText, key);
-        Assert.Equal(plainTextTestData, plainText);
+        Assert.AreEqual(plainTextTestData, plainText);
     }
 }
 

@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Security.Cryptography;
 
 namespace Sectra.UrlLaunch.Pki;
+
 internal sealed class SymmetricalEncryptor {
     public static byte[] Encrypt(byte[] input, out byte[] key, out byte[] iv) {
         byte[] encrypted;
@@ -13,7 +14,9 @@ internal sealed class SymmetricalEncryptor {
         key = rijAlg.Key;
         iv = rijAlg.IV;
 
+#pragma warning disable CA5401 // IV is freshly generated via GenerateIV() above
         using var encryptor = rijAlg.CreateEncryptor(rijAlg.Key, rijAlg.IV);
+#pragma warning restore CA5401
         using var ms = new MemoryStream();
         using var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write);
         cs.Write(input, 0, input.Length);

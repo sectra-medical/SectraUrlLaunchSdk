@@ -93,7 +93,7 @@ internal class Hkdf {
             throw new ArgumentException($"Maximum output key length is {255 * HashByteLength}", nameof(outputKeyByteLength));
         }
 
-        int n = Convert.ToInt32(Math.Ceiling((double)outputKeyByteLength / HashByteLength));
+        var n = Convert.ToInt32(Math.Ceiling((double)outputKeyByteLength / HashByteLength));
         var hmac = new HMACSHA256(key);
         var t = new List<byte[]>();
 
@@ -101,7 +101,7 @@ internal class Hkdf {
         t.Add(new byte[0]);
 
         // T1..TN
-        for (int i = 1; i <= n; i++) {
+        for (var i = 1; i <= n; i++) {
             var mac = hmac.ComputeHash(Concat(t.Last(), info, (byte)i));
             t.Add(mac);
         }

@@ -1,11 +1,11 @@
-﻿using NUnit.Framework;
-using Sectra.UrlLaunch.SharedSecret;
 using System;
 using System.Security.Cryptography;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Sectra.UrlLaunch.SharedSecret;
 
 namespace Sectra.UrlLaunch.IntegrationTests;
 
-[TestFixture]
+[TestClass]
 public class SectraSharedSecretEncryptionTests {
     private static string plainTextTestData = "The quick brown fox jumps over the lazy dog";
     private const string base64TestEncryptionKey = "D7qIalCnQzyGrU5sCVZ+HWYcGTihtO32bAuzSiPkTug=";
@@ -16,26 +16,26 @@ public class SectraSharedSecretEncryptionTests {
     private const string encryptedTextTestData2025 = "sharedSecretEncryptedUrlQuery=DGSc2jqpHoY4a0XSmW5R5yjPRODSOFRrQI7Pstpn4c54GuPLy06Y2GTmih8AYDUyA4vdSPhX85ZIYQ%2FhA2U0VLja1bH2hDuJyDpRNraoXtRrQYn5AkvA%2FPxWwKpQZri648w2U5uwcmTcw%2BsXd3sNjO9KqxUo%2BKm7%2F0%2BKLIrWArcRxXpNnonoF%2FyIQ99jxx%2F%2BkfQXELg8sL8kksJg";
 #endif
 
-    [OneTimeSetUp]
-    public void GlobalSetup() {
+    [ClassInitialize]
+    public static void GlobalSetup(TestContext context) {
         DateTimeProvider.Current = new TestDateTimeProvider();
     }
 
-    [OneTimeTearDown]
-    public void GlobalTeardown() {
+    [ClassCleanup]
+    public static void GlobalTeardown() {
         DateTimeProvider.ResetToDefault();
     }
 
-    [Test]
+    [TestMethod]
     public void IsSharedSecretEncryption_BackwardCompatibilityCheck() {
         // Arrange
         var encryptedString = "sharedSecretEncryptedUrlQuery=1";
 
         // Assert
-        Assert.That(SectraSharedSecretEncryption.IsSharedSecretEncryption(encryptedString), Is.True);
+        Assert.IsTrue(SectraSharedSecretEncryption.IsSharedSecretEncryption(encryptedString));
     }
 
-    [Test]
+    [TestMethod]
     public void IsSharedSecretEncryption_DetectsEncryptedLaunchString() {
         // Arrange
         var key = GetKey();
@@ -44,10 +44,10 @@ public class SectraSharedSecretEncryptionTests {
         var encryptedString = SectraSharedSecretEncryption.Secure(plainTextTestData, key);
 
         // Assert
-        Assert.That(SectraSharedSecretEncryption.IsSharedSecretEncryption(encryptedString), Is.True);
+        Assert.IsTrue(SectraSharedSecretEncryption.IsSharedSecretEncryption(encryptedString));
     }
 
-    [Test]
+    [TestMethod]
     public void SharedSecretEncryption_CanSecureAndViewString() {
         // Arrange
         var key = GetKey();
@@ -57,30 +57,30 @@ public class SectraSharedSecretEncryptionTests {
         var decryptedString = SectraSharedSecretEncryption.View(encryptedString, key);
 
         // Assert
-        Assert.That(plainTextTestData, Is.EqualTo(decryptedString));
+        Assert.AreEqual(plainTextTestData, decryptedString);
     }
 
-    [Test]
+    [TestMethod]
 #if NET8_0_OR_GREATER
-    [TestCase(encryptedTextTestData2023)]
+    [DataRow(encryptedTextTestData2023)]
 #endif
-    [TestCase(encryptedNetFrameworkTextTestData2023)]
+    [DataRow(encryptedNetFrameworkTextTestData2023)]
     public void SharedSecretEncryption_CanUnpackNonceAndTimeStampFromOldEncryptedString(string encryptedString) {
         // Arrange
         var key = GetKey(); // Key is not relevant as the decryption will fail earlier due to timestamp as expected
 
         // Act
-        var ex = Assert.Throws<ArgumentException>(() => SectraSharedSecretEncryption.View(encryptedString, key));
+        var ex = Assert.ThrowsExactly<ArgumentException>(() => SectraSharedSecretEncryption.View(encryptedString, key));
 
         // Assert
-        Assert.That(ex!.Message, Does.StartWith("Timestamp too old"));
+        StringAssert.StartsWith(ex.Message, "Timestamp too old");
     }
 
-    [Test]
+    [TestMethod]
 #if NET8_0_OR_GREATER
-    [TestCase(encryptedTextTestData2025)]
+    [DataRow(encryptedTextTestData2025)]
 #endif
-    [TestCase(encryptedNetFrameworkTextTestData2025)]
+    [DataRow(encryptedNetFrameworkTextTestData2025)]
     public void SharedSecretEncryption_CanDecryptVersionCompatibleStrings(string encryptedString) {
         // Arrange
         var key = Convert.FromBase64String(base64TestEncryptionKey);
@@ -89,7 +89,7 @@ public class SectraSharedSecretEncryptionTests {
         var decryptedString = SectraSharedSecretEncryption.View(encryptedString, key);
 
         // Assert
-        Assert.That(plainTextTestData, Is.EqualTo(decryptedString));
+        Assert.AreEqual(plainTextTestData, decryptedString);
     }
 
     private class TestDateTimeProvider : DateTimeProvider {

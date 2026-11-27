@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Cryptography;
 
 namespace Sectra.UrlLaunch.Pki;
+
 internal sealed class UrlStringEncryptor {
     /// <summary>
     /// The maximum signature length that is allowed in number of bytes.
@@ -35,7 +36,7 @@ internal sealed class UrlStringEncryptor {
         .SelectMany(x => x)
         .ToArray();
 
-        var encryptedUrlString = SymmetricalEncryptor.Encrypt(payloadAndSignature, out byte[] symmetricalKey, out byte[] iv);
+        var encryptedUrlString = SymmetricalEncryptor.Encrypt(payloadAndSignature, out var symmetricalKey, out var iv);
         var encryptedSymmetricalKey = key.Encrypt(symmetricalKey, RSAEncryptionPadding.OaepSHA1);
 
         return new EncryptedUrlString {
@@ -76,7 +77,7 @@ internal sealed class UrlStringEncryptor {
             throw new ArgumentException("The decrypted data contains no or insufficient signature length information.");
         }
 
-        byte[] signatureLength = new byte[SignatureLengthBytes];
+        var signatureLength = new byte[SignatureLengthBytes];
         Array.Copy(decryptedUrlStringAndSignature, signatureLength, SignatureLengthBytes);
         var signatureLengthInt = BitConverter.ToInt32(signatureLength, 0);
 
@@ -88,10 +89,10 @@ internal sealed class UrlStringEncryptor {
             throw new ArgumentException($"The specified signature length of {signatureLengthInt} does not match the length of the signature and url string data of {decryptedUrlStringAndSignature.Length - SignatureLengthBytes}.");
         }
 
-        byte[] signature = new byte[signatureLengthInt];
+        var signature = new byte[signatureLengthInt];
         Array.Copy(decryptedUrlStringAndSignature, SignatureLengthBytes, signature, 0, signatureLengthInt);
 
-        byte[] urlString = new byte[decryptedUrlStringAndSignature.Length - signatureLengthInt - SignatureLengthBytes];
+        var urlString = new byte[decryptedUrlStringAndSignature.Length - signatureLengthInt - SignatureLengthBytes];
         Array.Copy(decryptedUrlStringAndSignature, SignatureLengthBytes + signatureLengthInt, urlString, 0, urlString.Length);
 
         return new SignedUrlString(urlString, signature);

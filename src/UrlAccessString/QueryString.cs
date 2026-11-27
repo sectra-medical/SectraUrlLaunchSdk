@@ -32,12 +32,12 @@ public static class QueryString {
         }
 
         if (parameters.AccessionNumber != null && parameters.AccessionNumber.Count > 0) {
-            string accessionNumbers = ListToString(parameters.AccessionNumber);
+            var accessionNumbers = ListToString(parameters.AccessionNumber);
             queryParameters.Add(CreateUrlParameter("acc_no", accessionNumbers, false));
         }
 
         if (parameters.ExaminationId != null && parameters.ExaminationId.Count > 0) {
-            string examinationIds = ListToString(parameters.ExaminationId);
+            var examinationIds = ListToString(parameters.ExaminationId);
             queryParameters.Add(CreateUrlParameter("exam_id", examinationIds, false));
         }
 
@@ -86,7 +86,7 @@ public static class QueryString {
         }
 
         if (parameters.Ids7Commands != null && parameters.Ids7Commands.Count > 0) {
-            string cmds = ListToString(parameters.Ids7Commands);
+            var cmds = ListToString(parameters.Ids7Commands);
             queryParameters.Add(CreateUrlParameter("ids7_cmds", cmds, false));
         } else if (parameters.Ids7Command.HasValue && parameters.Ids7Command != Parameters.Ids7CommandEnum.None) {
             queryParameters.Add(CreateUrlParameter("ids7_cmds", CreateIds7Command(parameters.Ids7Command.Value), false));
@@ -127,32 +127,32 @@ public static class QueryString {
                 parameters.StartupPresentation.DatabaseGuid == Guid.Empty ? StartupPresentationData.EmptyGuidString : parameters.StartupPresentation.DatabaseGuid.ToString(),
                 parameters.StartupPresentation.BaseRpCookie };
 
-            string escapedStr = ListToString(startupPresentationArgs, "^", true);
+            var escapedStr = ListToString(startupPresentationArgs, "^", true);
             queryParameters.Add("sp=" + escapedStr);
         }
 
         if (parameters.PatientName != null && !string.IsNullOrEmpty(parameters.PatientName)) {
-            string escapedStr = EscapeString(parameters.PatientName);
+            var escapedStr = EscapeString(parameters.PatientName);
             queryParameters.Add("pat_name=" + escapedStr);
         }
 
         if (parameters.PatientBirthdate != null) {
-            string escapedStr = EscapeString(parameters.PatientBirthdate.Value.ToString("yyyyMMdd"));
+            var escapedStr = EscapeString(parameters.PatientBirthdate.Value.ToString("yyyyMMdd"));
             queryParameters.Add("pat_birth=" + escapedStr);
         }
 
         if (parameters.PatientSex != null && !string.IsNullOrEmpty(parameters.PatientSex)) {
-            string escapedStr = EscapeString(parameters.PatientSex);
+            var escapedStr = EscapeString(parameters.PatientSex);
             queryParameters.Add("pat_sex=" + escapedStr);
         }
 
         if (parameters.ReferringUnit != null && !string.IsNullOrEmpty(parameters.ReferringUnit)) {
-            string escapedStr = EscapeString(parameters.ReferringUnit);
+            var escapedStr = EscapeString(parameters.ReferringUnit);
             queryParameters.Add("ref_unit=" + escapedStr);
         }
 
         if (parameters.HisId != null && !string.IsNullOrEmpty(parameters.HisId)) {
-            string escapedStr = EscapeString(parameters.HisId);
+            var escapedStr = EscapeString(parameters.HisId);
             queryParameters.Add("his_id=" + escapedStr);
         }
 
@@ -214,7 +214,7 @@ public static class QueryString {
             // decoded whereas on Win8 they are not, i.e. if you try to launch IDS7 using the
             // url "ids7agent:a%3db" the argument "a=b" will be passed to the corresponding process
             // on Win7 and earlier, but "a%3db" will be passed on Win8.
-            string decodedString = HttpUtility.UrlDecode(queryString);
+            var decodedString = HttpUtility.UrlDecode(queryString);
 
             return InternalParseAccessString(decodedString, validateParameters);
         }
@@ -231,16 +231,16 @@ public static class QueryString {
             var ignoredParams = new HashSet<string> { "key", "close_popup", "client" };
 
             // Parse the access string
-            string[] args = accessString.Split('&');
-            foreach (string arg in args) {
-                string[] param = arg.Split('=');
+            var args = accessString.Split('&');
+            foreach (var arg in args) {
+                var param = arg.Split('=');
 
                 if (param.Length != 2) {
                     throw new ArgumentException("Invalid query syntax: " + accessString);
                 }
 
-                string paramName = param[0];
-                string paramValue = param[1];
+                var paramName = param[0];
+                var paramValue = param[1];
 
                 if (ignoredParams.Contains(paramName)) {
                     continue;
@@ -253,7 +253,7 @@ public static class QueryString {
                         break;
                     case "time":
                         var time1970 = new DateTime(1970, 1, 1);
-                        long secondsSince1970 = long.Parse(paramValue);
+                        var secondsSince1970 = long.Parse(paramValue);
                         parameters.Time = time1970.AddSeconds(secondsSince1970);
                         break;
                     case "login_type":
@@ -281,7 +281,7 @@ public static class QueryString {
                         parameters.SopInstanceUid = UnEscapeString(paramValue);
                         break;
                     case "frame_number":
-                        if (int.TryParse(paramValue, out int frameNumber) && (frameNumber >= 1)) {
+                        if (int.TryParse(paramValue, out var frameNumber) && (frameNumber >= 1)) {
                             parameters.OneBasedFrameNumber = frameNumber;
                         } else {
                             throw new ArgumentException($"Invalid syntax. Parameter: {paramName} Value: {paramValue}");
@@ -293,7 +293,7 @@ public static class QueryString {
                         // a startup presentation that displays the thumbnail series.
 
                         // Syntax for args is: <display unit guid>^<datbase guid>^<base rp cookie>
-                        List<string> dpArgs = ParseList(paramValue, true);
+                        var dpArgs = ParseList(paramValue, true);
                         if (dpArgs.Count != 3) {
                             throw new ArgumentException(
                                 $"Invalid syntax. Parameter: {paramName} Value: {paramValue}");
@@ -318,7 +318,7 @@ public static class QueryString {
 
                         break;
                     case "pat_name":
-                        string patientName = UnEscapeString(paramValue);
+                        var patientName = UnEscapeString(paramValue);
                         if (!IsPersonName(patientName)) {
                             throw new ArgumentException(
                                 $"'{patientName}' is not a valid DICOM person name (family name complex^given name complex^middle name^name prefix^name suffix)");
@@ -327,8 +327,8 @@ public static class QueryString {
                         parameters.PatientName = patientName;
                         break;
                     case "pat_birth":
-                        string birthdate = UnEscapeString(paramValue);
-                        if (!IsDate(birthdate, out string parsedDate)) {
+                        var birthdate = UnEscapeString(paramValue);
+                        if (!IsDate(birthdate, out var parsedDate)) {
                             throw new ArgumentException(
                                 $"'{birthdate}' is not a valid DICOM date (YYYYMMDD)");
                         }
@@ -336,8 +336,8 @@ public static class QueryString {
                         parameters.PatientBirthdate = DateTime.ParseExact(UnEscapeString(parsedDate), "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
                         break;
                     case "pat_sex":
-                        string sex = UnEscapeString(paramValue);
-                        if (!IsPatientSex(sex, out string? parsedSex)) {
+                        var sex = UnEscapeString(paramValue);
+                        if (!IsPatientSex(sex, out var parsedSex)) {
                             throw new ArgumentException(
                                 $"'{sex}' is not a valid DICOM sex (EMPTY, M, F or O)");
                         }
@@ -345,7 +345,7 @@ public static class QueryString {
                         parameters.PatientSex = parsedSex;
                         break;
                     case "ref_unit":
-                        string refUnit = UnEscapeString(paramValue);
+                        var refUnit = UnEscapeString(paramValue);
                         if (!IsLongString(refUnit)) {
                             throw new ArgumentException(
                                 $"'{refUnit}' is not a DICOM long string.");

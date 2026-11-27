@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 #endif
 
 namespace Sectra.UrlLaunch.SharedSecret;
+
 internal class EncryptedOneTimeSignature {
 
     private const int KeyByteSize = 32;

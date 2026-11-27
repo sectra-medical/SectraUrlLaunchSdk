@@ -43,8 +43,8 @@ internal static class QueryStringUtility {
     /// unescaped before being processed.
     /// </summary>
     public static List<string> ParseList(string arg, bool unescape) {
-        string processedArg = unescape ? UnEscapeString(arg) : arg;
-        string[] param = processedArg.Split('^');
+        var processedArg = unescape ? UnEscapeString(arg) : arg;
+        var param = processedArg.Split('^');
 
         return param.Length > 0 ? new List<string>(param) : new List<string> { processedArg };
     }
@@ -59,16 +59,16 @@ internal static class QueryStringUtility {
     /// <summary>
     /// Converts a DateTime object to the query string integer equivalent
     /// </summary>
-    public static int TimeToSeconds(DateTime time) {
+    public static long TimeToSeconds(DateTime time) {
         var t = time - new DateTime(1970, 1, 1);
-        return (int)t.TotalSeconds;
+        return (long)t.TotalSeconds;
     }
 
     /// <summary>
     /// Converts query string integer time to a DateTime object
     /// </summary>
     public static DateTime SecondsToTime(string seconds) {
-        long secondsSince1970 = long.Parse(seconds);
+        var secondsSince1970 = long.Parse(seconds);
         var time = new DateTime(1970, 1, 1);
         time = time.AddSeconds(secondsSince1970);
         return time;
@@ -104,7 +104,7 @@ internal static class QueryStringUtility {
         // Search for invalid characters in date and remove
         // characters of the type '/', '-' and space.
         date = string.Empty;
-        foreach (char c in str) {
+        foreach (var c in str) {
             if ((c == '-') || (c == ' ') || (c == '/')) {
                 continue;
             }
@@ -122,13 +122,13 @@ internal static class QueryStringUtility {
         }
 
         // Check if month is in the interval [1, 12]
-        int month = int.Parse(date.Substring(4, 2));
+        var month = int.Parse(date.Substring(4, 2));
         if (month < 1 || month > 12) {
             return false;
         }
 
         // Check if day is in the interval [1, 31]
-        int day = int.Parse(date.Substring(6, 2));
+        var day = int.Parse(date.Substring(6, 2));
         if (day < 1 || day > 31) {
             return false;
         }

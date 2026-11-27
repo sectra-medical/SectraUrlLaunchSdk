@@ -1,12 +1,14 @@
-﻿#if NET48_OR_GREATER
+#if NET48_OR_GREATER
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using Xunit;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Sectra.UrlLaunch.SharedSecret;
+
+[TestClass]
 public class HkdfTests {
 
     /// <summary>
@@ -15,27 +17,27 @@ public class HkdfTests {
     public static IEnumerable<object[]> OutputLengts =>
         Enumerable.Range(1, 255).Select(i => new object[] { i * 32 });
 
-    [Fact]
+    [TestMethod]
     public void Hkdf_Derive_Succeeds() {
         var result = Hkdf.Derive(Rng.GetBytes(32));
 
-        Assert.Equal(32, result.Length);
+        Assert.AreEqual(32, result.Length);
     }
 
-    [Theory]
-    [MemberData(nameof(OutputLengts))]
+    [TestMethod]
+    [DynamicData(nameof(OutputLengts))]
     public void Hkdf_DeriveCustomLength_Succeeds(int outputLength) {
         var result = Hkdf.Derive(Rng.GetBytes(32), outputLength);
 
-        Assert.Equal(outputLength, result.Length);
+        Assert.AreEqual(outputLength, result.Length);
     }
 
-    [Fact]
+    [TestMethod]
     public void Hkdf_DeriveUsingSmallKey_Throws() {
-        Assert.Throws<ArgumentException>(() => Hkdf.Derive(Rng.GetBytes(31), 32));
+        Assert.ThrowsExactly<ArgumentException>(() => Hkdf.Derive(Rng.GetBytes(31), 32));
     }
 
-    [Fact]
+    [TestMethod]
     public void Hkdf_DeriveUsingSameKeyAndSalt_Equals() {
         var key = Rng.GetBytes(32);
         var salt = Rng.GetBytes(32);
@@ -43,47 +45,47 @@ public class HkdfTests {
 
         var outKey2 = Hkdf.Derive(key, salt);
 
-        Assert.Equal(outKey, outKey2);
+        CollectionAssert.AreEqual(outKey, outKey2);
     }
 
-    [Fact]
+    [TestMethod]
     public void Hkdf_DeriveUsingSameKeyDifferentSalt_NotEquals() {
         var key = Rng.GetBytes(32);
         var outKey = Hkdf.Derive(key, Rng.GetBytes(32));
         var outKey2 = Hkdf.Derive(key, Rng.GetBytes(32));
 
-        Assert.NotEqual(outKey, outKey2);
+        CollectionAssert.AreNotEqual(outKey, outKey2);
     }
 
-    [Fact]
+    [TestMethod]
     public void Hkdf_DeriveUsingDifferentKeySameSalt_NotEquals() {
         var outKey = Hkdf.Derive(Rng.GetBytes(32));
         var outKey2 = Hkdf.Derive(Rng.GetBytes(32));
 
-        Assert.NotEqual(outKey, outKey2);
+        CollectionAssert.AreNotEqual(outKey, outKey2);
     }
 
-    [Fact]
+    [TestMethod]
     public void Hkdf_DeriveWithInfo_Succeeds() {
         var key = Rng.GetBytes(32);
         var salt = Rng.GetBytes(32);
         var outKey = Hkdf.Derive(key, salt, 32, Encoding.UTF8.GetBytes("Key for encryption"));
         var outKey2 = Hkdf.Derive(key, salt, 32, Encoding.UTF8.GetBytes("Key for encryption"));
 
-        Assert.Equal(32, outKey.Length);
-        Assert.Equal(outKey, outKey2);
+        Assert.AreEqual(32, outKey.Length);
+        CollectionAssert.AreEqual(outKey, outKey2);
     }
 
-    [Fact]
+    [TestMethod]
     public void Hkdf_DeriveWithDifferentInfo_DoesNotEqual() {
         var salt = Rng.GetBytes(32);
         var outKey = Hkdf.Derive(Rng.GetBytes(32), salt, 32, Encoding.UTF8.GetBytes("Key for encryption"));
         var outKey2 = Hkdf.Derive(Rng.GetBytes(32), salt, 32, Encoding.UTF8.GetBytes("Key for authentication"));
 
-        Assert.NotEqual(outKey, outKey2);
+        CollectionAssert.AreNotEqual(outKey, outKey2);
     }
 
-    [Fact]
+    [TestMethod]
     public void Hkdf_DeriveNormalCase_Succeeds() {
         var key = Rng.GetBytes(32);
         var outKey = Hkdf.Derive(key);
@@ -93,13 +95,13 @@ public class HkdfTests {
         var hmac2 = new HMACSHA256(prk);
         var outKey2 = hmac2.ComputeHash(new byte[1] { 0x01 });
 
-        Assert.Equal(outKey, outKey2);
+        CollectionAssert.AreEqual(outKey, outKey2);
     }
 
     /// <summary>
     /// Test Case 2 from RFC
     /// </summary>
-    [Fact]
+    [TestMethod]
     public void Hkdf_DeriveUsingRfcTestCase2_Succeeds() {
 
         byte[] IKM = {
@@ -136,10 +138,10 @@ public class HkdfTests {
 
         var outKey = Hkdf.Derive(IKM, salt, length, info);
 
-        Assert.Equal(OKM, outKey);
+        CollectionAssert.AreEqual(OKM, outKey);
     }
 
-    [Fact]
+    [TestMethod]
     public void Hkdf_DeriveUsingRfcTestCase3_Succeeds() {
         byte[] IKM = {
             0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,
@@ -157,7 +159,7 @@ public class HkdfTests {
         // length in the other flavor
         var outKey = Hkdf.Derive(IKM, Enumerable.Repeat((byte)0, 32).ToArray(), length);
 
-        Assert.Equal(OKM, outKey);
+        CollectionAssert.AreEqual(OKM, outKey);
     }
 }
 #endif
