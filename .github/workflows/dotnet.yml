@@ -25,36 +25,47 @@ jobs:
       with:
         dotnet-version: 10.0.x
 
-    # Step 3: Install Mono
-    - name: Set up Mono Environment
-      run: |
-        sudo apt update
-        sudo apt install -y mono-complete
-
-    # Step 4: Verify Mono Installation
-    - name: Verify Mono
-      run: mono --version
-
-    # Step 5: Build and test the SDK
+    # Step 3: Build and test the SDK
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
+    # The net48 tests run in the test-netframework job: VSTest no longer runs
+    # .NET Framework tests on Linux (Mono support was removed).
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build --framework net10.0 --verbosity normal
 
-    # Step 6: Integration test the SDK
+    # Step 4: Integration test the SDK
     - name: Integration test
       run: ./scripts/IntegrationTestRunner.sh
 
-    # Step 7: Package the SDK
+    # Step 5: Package the SDK
     - name: Pack
       run: dotnet pack --configuration Release -o ./artifacts
 
-    # Step 8: Upload
+    # Step 6: Upload
     - name: Upload
       uses: actions/upload-artifact@v7
       with:
         name: NuGet
         path: ./artifacts
         retention-days: 5
+
+  test-netframework:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v6
+      with:
+        dotnet-version: 10.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    - name: Test
+      run: dotnet test --no-build --framework net48 --verbosity normal
